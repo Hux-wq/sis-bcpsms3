@@ -43,9 +43,9 @@
         <!-- Include SweetAlert2 CSS and JS in your layout file -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-
+        <link rel="stylesheet" href="/resources/css/app.css">
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <link rel="stylesheet" href="/resources/js/app.js">
 
     </head>
     <body class="font-sans antialiased">

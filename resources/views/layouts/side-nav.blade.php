@@ -70,9 +70,9 @@
             
             <form id="logout-form" method="POST" action="{{ route('logout') }}" class="bg-transparent m-0 p-0 w-100">
                 @csrf
-                <button type="submit" class="p-0 m-0 w-100 text-start" onclick="confirmLogout(event)">
+                <a type="submit" class="p-0 m-0 w-100 text-start" onclick="confirmLogout(event)">
                     <span class="text-light">{{ __('Log Out') }}</span>
-                </button>
+                </a>
             </form>
         </div>
     </x-responsive-nav-link>
