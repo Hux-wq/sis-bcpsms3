@@ -10,7 +10,8 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Models\UserNameInfo;
 use App\Models\UserBasicInfo;
 use App\Models\UserContactInfo;
-
+use App\Models\UserSchoolInfo;
+use App\Models\AcademicRecord;
 
 class User extends Authenticatable
 {
@@ -58,5 +59,15 @@ class User extends Authenticatable
     public function UserContactInfo()
     {
         return $this->hasOne(UserContactInfo::class);
+    }
+
+    public function UserSchoolInfo()
+    {
+        return $this->hasOne(UserSchoolInfo::class);
+    }
+
+    public function AcadRecordsInfo()
+    {
+        return $this->hasMany(AcademicRecord::class);
     }
 }

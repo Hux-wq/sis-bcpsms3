@@ -18,7 +18,7 @@ class UserContactSeeder extends Seeder
             'phone_number' => 9387161706,
             'email_address' => 'mark.marquez3@student.com',
             'facebook' => 'https://www.facebook.com/marquez',
-            'user_id' => 2, 
+            'user_id' => 3, 
         ]);
     }
 }

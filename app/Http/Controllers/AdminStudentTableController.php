@@ -10,7 +10,7 @@ class AdminStudentTableController extends Controller
     public function index()
     {
 
-        $users = User::select('id','email')->where('account_type','student')->with(['UserBasicInfo', 'UserNameInfo'])->get();
+        $users = User::select('id','email','account_number')->where('account_type','student')->with(['UserBasicInfo', 'UserNameInfo'])->get();
         
 
         return view('admin.student', compact('users'));

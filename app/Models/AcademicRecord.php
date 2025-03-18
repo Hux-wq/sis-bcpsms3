@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 
-class UserNameInfo extends Model
+class AcademicRecord extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['first_name', 'middle_name','last_name','suffix_name','user_id'];
+    protected $fillable = ['student_id', 'section_id','course_id','year','year_level','semester','cumulative_gpa'];   
+
 
     public function user()
     {

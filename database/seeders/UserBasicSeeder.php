@@ -22,7 +22,7 @@ class UserBasicSeeder extends Seeder
             'religion' => 'catholic',
             'place_of_birth' => 'Quezon City',
             'current_address' => 'Quezon City',
-            'user_id' => 2,
+            'user_id' => 3,
         ]);
     }
 }

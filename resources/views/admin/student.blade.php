@@ -21,7 +21,7 @@
                         {{ $user->UserNameInfo->first_name ?? 'N/A'}}
                         {{ $user->UserNameInfo->middle_name ?? 'N/A'}}
                     </td>
-                    <td>{{ $user->id }}</td>
+                    <td>{{ $user->account_number }}</td>
                     <td>{{ $user->UserBasicInfo->age ?? 'N/A' }}</td>
                     <td>{{ $user->email }}</td>
                     <td>

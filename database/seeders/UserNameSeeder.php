@@ -18,7 +18,7 @@ class UserNameSeeder extends Seeder
             'middle_name' => 'dean',
             'last_name' => 'marquez',
             'suffix_name' => null,
-            'user_id' => 2,
+            'user_id' => 3,
         ]);
     }
 }
