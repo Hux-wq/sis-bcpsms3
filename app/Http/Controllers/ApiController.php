@@ -28,6 +28,23 @@ class ApiController extends Controller
         }
     }
 
+    public function alumni()
+    {
+        try {
+            $alumni = Student::where('enrollment_status', 'Graduated')->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $alumni
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function store(Request $request)
 {
     // Validate the incoming request
