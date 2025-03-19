@@ -98,7 +98,7 @@
             }).then((result , id) => {
                 if (result.isConfirmed) {
                     // Submit the form if confirmed
-                    document.getElementById('logout-form'+ id).submit();
+                    document.getElementById('logout-form').submit();
                     
                     // Show success message
                     Swal.fire({
