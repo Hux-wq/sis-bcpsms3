@@ -14,18 +14,18 @@
                 </tr>
             </thead>    
             <tbody>
-                @foreach ( $users as $user)
+                @foreach ( $students as $student)
                 <tr>
                     <td class="text-capitalize">
-                        {{ $user->UserNameInfo->last_name ?? 'N/A'}},
-                        {{ $user->UserNameInfo->first_name ?? 'N/A'}}
-                        {{ $user->UserNameInfo->middle_name ?? 'N/A'}}
+                        {{ $student->last_name ?? 'N/A'}},
+                        {{ $student->first_name ?? 'N/A'}}
+                        {{ $student->middle_name ?? 'N/A'}}
                     </td>
-                    <td>{{ $user->account_number }}</td>
-                    <td>{{ $user->UserBasicInfo->age ?? 'N/A' }}</td>
-                    <td>{{ $user->email }}</td>
+                    <td>{{ $user->account_number ?? 'N/A'}}</td>
+                    <td>{{ $student->age ?? 'N/A' }}</td>
+                    <td>{{ $student->email_address ?? 'N/A' }}</td>
                     <td>
-                        <a href="/student/profile/{{$user->id}}" class="btn btn-primary">
+                        <a href="/student/profile/{{$student->id}}" class="btn btn-primary">
                             <i class="fa-solid fa-eye"></i>
                         </a>
                     </td>

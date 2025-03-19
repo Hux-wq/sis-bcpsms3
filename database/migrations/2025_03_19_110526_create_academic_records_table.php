@@ -13,26 +13,16 @@ return new class extends Migration
     {
         Schema::create('academic_records', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('section_id');
-            $table->unsignedInteger('year');
+            $table->string('school_year');
             $table->unsignedInteger('year_level');
             $table->unsignedInteger('semester');
             $table->decimal('cumulative_gpa', 4, 2);
             $table->timestamps();
-
-
-            $table->foreign('section_id') 
-            ->references('id')  
-            ->on('sections')  
-            ->onDelete('cascade');
-
-            $table->foreign('user_id') 
-            ->references('id')  
-            ->on('users')  
-            ->onDelete('cascade');
-           
-
+        
+            $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
         });
     }
 
@@ -41,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('academic_records_');
+        Schema::dropIfExists('academic_records');
     }
 };

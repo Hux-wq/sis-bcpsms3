@@ -2,59 +2,52 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Section;
+use Illuminate\Support\Facades\DB;
+use App\Models\Department;
+use App\Models\User;
 
 class SectionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
-    public function run(): void
+    public function run()
     {
-        Section::create([
-            'section' => 1,
-            'adviser' => 3, 
-            'year' => 2024,
-            'semester' => 1, 
-            'specialization' => 1,
-            'created_by' => 'system',
-            'department_id' => 1, 
-            
-        ]);
-
-        Section::create([
-            'section' => 2,
-            'adviser' => null, 
-            'year' => 2024,
-            'semester' => 2, 
-            'specialization' => 1,
-            'created_by' => 'system',
-            'department_id' => 1, 
-            
-        ]);
-
-        Section::create([
-            'section' => 3,
-            'adviser' => null, 
-            'year' => 2024,
-            'semester' => 2, 
-            'specialization' => 1,
-            'created_by' => 'system',
-            'department_id' => 2, 
-            
-        ]);
-
-        Section::create([
-            'section' => 4,
-            'adviser' => null, 
-            'year' => 2024,
-            'semester' => 2, 
-            'specialization' => 1,
-            'created_by' => 'system',
-            'department_id' => 3, 
-            
-        ]);
+        // Get all departments
+        $departments = Department::all();
+        
+        // Get some users to use as advisers
+        // Assuming you have users in the database
+        $users = User::all();
+        
+        // If no users exist, create a default array of IDs
+        $userIds = $users->count() > 0 ? $users->pluck('id')->toArray() : [null];
+        
+        // Years and semesters
+        $years = [1, 2, 3, 4];
+        $semesters = [1, 2];
+        
+        // Possible specializations (null or 1-5)
+        $specializations = [null, 1, 2, 3, 4, 5];
+        
+        foreach ($departments as $department) {
+            // Create 10 sections for each department with incremental section numbers
+            for ($i = 1; $i <= 10; $i++) {
+                DB::table('sections')->insert([
+                    'section' => $i, // Incremental section number from 1 to 10
+                    'adviser' => null, // Randomly select an adviser
+                    'semester_year' => null,
+                    'semester' => null ,
+                    'specialization' => null,
+                    'created_by' => 'system',
+                    'department_id' => $department->id,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+        }
     }
 }

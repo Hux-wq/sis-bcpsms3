@@ -34,7 +34,13 @@
     </x-nav-link>
 
     <hr class="sidebar-divider">
-    <li class="nav-heading">Students</li>
+    <li class="nav-heading">Enrollees & Students</li>
+
+    <x-nav-link :href="route('admin.pending-enrollees')" :active="request()->routeIs('enrollees')">
+        <i class="fa-solid fa-graduation-cap" style="width: 15px"></i>
+        {{ __('Pending Enrollees') }}
+    </x-nav-link>
+
 
     <x-nav-link :href="route('admin.student')" :active="request()->routeIs('student')">
         <i class="fa-solid fa-graduation-cap" style="width: 15px"></i>
@@ -89,10 +95,10 @@
                 cancelButtonColor: "#d33",
                 confirmButtonColor: "#3085d6",
                 confirmButtonText: "Logout!"
-            }).then((result) => {
+            }).then((result , id) => {
                 if (result.isConfirmed) {
                     // Submit the form if confirmed
-                    document.getElementById('logout-form').submit();
+                    document.getElementById('logout-form'+ id).submit();
                     
                     // Show success message
                     Swal.fire({

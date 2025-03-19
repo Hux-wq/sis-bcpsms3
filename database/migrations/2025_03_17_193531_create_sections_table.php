@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('section');
             $table->unsignedBigInteger('adviser')->nullable();
-            $table->unsignedInteger('year');
-            $table->unsignedInteger('semester');
+            $table->string('semester_year')->nullable();
+            $table->unsignedInteger('semester')->nullable();
             $table->unsignedInteger('specialization')->nullable();
             $table->string('created_by')->default('system');
             $table->unsignedBigInteger('department_id')->nullable();

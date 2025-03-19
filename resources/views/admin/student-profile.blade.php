@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <x-page-title header="{{$user->UserNameInfo->first_name}} {{$user->UserNameInfo->middle_name}} {{$user->UserNameInfo->last_name}}" :links='["student" => "/student", "profile" => "/student/profile/{$user->id}"]'/>
+    <x-page-title header="{{$student->first_name}} {{$student->middle_name}} {{$student->last_name}}" :links='["student" => "/student", "profile" => "/student/profile/{$student->id}"]'/>
 
 
     <div class="row m-0">
@@ -16,8 +16,8 @@
                         <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
             
                             <img src="/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-                            <h1 class="text-capitalize fs-5  fw-bold">{{$user->UserNameInfo->first_name}} {{$user->UserNameInfo->middle_name}} {{$user->UserNameInfo->last_name}}</h1>
-                            <h6>{{$user->email}}</h6>
+                            <h1 class="text-capitalize fs-5  fw-bold">{{$student->first_name}} {{$student->middle_name}} {{$student->last_name}}</h1>
+                            <h6>{{$student->email}}</h6>
                             <div class="social-links mt-2">
                                 <a href="/" class="twitter"><i class="fa-brands fa-twitter"></i></a>
                                 <a href="/" class="facebook"><i class="fa-brands fa-facebook"></i></a>
@@ -39,36 +39,36 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-3 col-md-4 label ">Last Name</div>
-                        <div class="col-lg-9 col-md-8 text-capitalize">{{$user->UserNameInfo->last_name}}</div>
+                        <div class="col-lg-9 col-md-8 text-capitalize">{{$student->last_name}}</div>
                     </div>
     
                     <div class="row">
                         <div class="col-lg-3 col-md-4 label ">First Name</div>
-                        <div class="col-lg-9 col-md-8 text-capitalize">{{$user->UserNameInfo->first_name}}</div>
+                        <div class="col-lg-9 col-md-8 text-capitalize">{{$student->first_name}}</div>
                     </div>
                     <div class="row">
                         <div class="col-lg-3 col-md-4 label ">Middle Name</div>
-                        <div class="col-lg-9 col-md-8 text-capitalize">{{$user->UserNameInfo->middle_name}}</div>
+                        <div class="col-lg-9 col-md-8 text-capitalize">{{$student->middle_name}}</div>
                     </div>
     
                     <div class="row">
                     <div class="col-lg-3 col-md-4 label">Age</div>
-                    <div class="col-lg-9 col-md-8">{{$user->UserBasicInfo->age}}</div>
+                    <div class="col-lg-9 col-md-8">{{$student->age}}</div>
                     </div>
     
                     <div class="row">
                         <div class="col-lg-3 col-md-4 label">Gender</div>
-                        <div class="col-lg-9 col-md-8 text-capitalize">{{$user->UserBasicInfo->gender}}</div>
+                        <div class="col-lg-9 col-md-8 text-capitalize">{{$student->gender}}</div>
                     </div>
                     
                     <div class="row">
                         <div class="col-lg-3 col-md-4 label">Date of Birth</div>
-                        <div class="col-lg-9 col-md-8">{{$user->UserBasicInfo->birthdate}}</div>
+                        <div class="col-lg-9 col-md-8">{{$student->birthdate}}</div>
                     </div>
     
                     <div class="row">
                         <div class="col-lg-3 col-md-4 label">Birth of Place</div>
-                        <div class="col-lg-9 col-md-8">{{$user->UserBasicInfo->place_of_birth}}</div>
+                        <div class="col-lg-9 col-md-8">{{$student->place_of_birth}}</div>
                     </div>
     
                 </div>

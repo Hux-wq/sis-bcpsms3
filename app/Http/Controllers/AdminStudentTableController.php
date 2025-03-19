@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Models\Student;
 
 class AdminStudentTableController extends Controller
 {
     public function index()
     {
 
-        $users = User::select('id','email','account_number')->where('account_type','student')->with(['UserBasicInfo', 'UserNameInfo'])->get();
+        $students = Student::where('enrollment_status', 'enrolled')->get();
         
 
-        return view('admin.student', compact('users'));
+        return view('admin.student', compact('students'));
     }
 
 
@@ -21,9 +21,8 @@ class AdminStudentTableController extends Controller
     public function studentProfile($id)
     {
 
-        $user = User::with(['UserBasicInfo', 'UserNameInfo', 'UserContactInfo'])
-            ->findOrFail($id);
+        $student = Student::findOrFail($id);
     
-        return view('admin.student-profile', compact('user'));
+        return view('admin.student-profile', compact('student'));
     }
 }
