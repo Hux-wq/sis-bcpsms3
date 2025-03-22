@@ -23,3 +23,5 @@ Route::get('/api/students', [ApiController::class, 'students']);
 Route::get('/api/alumni', [ApiController::class, 'alumni']);
 
 Route::post('/api/student', [ApiController::class, 'store']);
+
+Route::get('/api/student/get', [ApiController::class, 'fetchAndInsertStudentData']);

@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+
 
 class ApiController extends Controller
 {
@@ -137,4 +139,53 @@ class ApiController extends Controller
         }
         
     }
+
+
+
+    public function fetchAndInsertStudentData()
+{
+    // URL of the external API
+    $url = 'https://admission.bcpsms3.com/api_students.php';
+    
+    $response = Http::get($url);
+
+    if ($response->successful()) {
+        $studentsData = $response->json();
+
+        foreach ($studentsData as $student) {
+            Student::create([
+                'student_number' => $student['student_number'],
+                'first_name' => $student['first_name'],
+                'middle_name' => $student['middle_name'] ?? null,  
+                'last_name' => $student['last_name'],
+                'age' => $student['age'], 
+                'sex' => $student['sex'],
+                'birthdate' => $student['birthdate'],
+                'email' => $student['email'],
+                'address' => $student['address'],
+                'contact_number' => $student['contact_number'],
+                'status' => $student['status'],
+                'academic_year' => $student['academic_year'],
+                'department_code' => $student['department_code'],
+                'year_level' => $student['year_level'],
+                'guardian_name' => $student['guardian_name'],
+                'guardian_contact' => $student['guardian_contact'],
+            ]);
+        }
+
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Students successfully inserted into the database!',
+        ], 201);
+
+    } else {
+        
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to fetch data from the external API',
+        ], 500);
+    }
+}
+
 }
