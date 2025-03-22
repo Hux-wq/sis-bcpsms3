@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('student_school_infos', function (Blueprint $table) {
             $table->id();
-            $table->string('academic_year');
+            $table->string('academic_year')->nullable();
             $table->unsignedInteger('year_level');
             $table->string('department_code');
             $table->unsignedBigInteger('student_id');
