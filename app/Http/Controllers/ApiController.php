@@ -164,12 +164,12 @@ class ApiController extends Controller
                 'email_address' => $student['email'],
                 'current_address' => $student['address'],
                 'contact_number' => $student['contact_number'],
+                'enrollment_status' => $student['status'],
                 
             ]);
 
             $acad = DB::table('student_school_infos')->insert([
                 'student_id' => $studentId,
-                'enrollment_status' => $student['status'],
                 'department_code' => $student['department_code'],
                 'year_level' => $student['year_level'],
             ]);
