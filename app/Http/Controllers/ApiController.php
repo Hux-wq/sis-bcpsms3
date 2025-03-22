@@ -7,7 +7,7 @@ use App\Models\Student;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 
 class ApiController extends Controller
 {
@@ -46,55 +46,96 @@ class ApiController extends Controller
     }
 
     public function store(Request $request)
-{
-    // Validate the incoming request
-    $validator = Validator::make($request->all(), [
-        'first_name' => 'required|string|max:255',
-        'middle_name' => 'nullable|string|max:255',
-        'last_name' => 'required|string|max:255',
-        'suffix_name' => 'nullable|string|max:255',
-        'age' => 'required|integer|min:18',
-        'gender' => 'required|in:male,female,other',
-        'birthdate' => 'required|date',
-        'religion' => 'required|string|max:255',
-        'place_of_birth' => 'required|string|max:255',
-        'current_address' => 'required|string',
-        'email_address' => 'required|email|unique:students,email_address',
-        'contact_number' => 'required|string|max:15',
-        'enrollment_date' => 'required|date',
-        'enrollment_for' => 'required|string|max:255',
-        'desired_major' => 'required|string|max:255',
-        'enrollment_status' => 'required|string|max:255',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Validation failed',
-            'errors' => $validator->errors(),
-        ], 422);
-    }
-
-    try {
-        // Create the student record using insertGetId
-        $studentData = $validator->validated();
-
-        $studentId = DB::table('students')->insertGetId($studentData);
+    {
+        $validator = Validator::make($request->all(), [
+            'student_number' => 'required|integer',
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'age' => 'required|integer|min:18',
+            'sex' => 'required|in:male,female,other',
+            'birthdate' => 'required|date',
+            'email' => 'required|email|unique:students,email_address',
+            'address' => 'required|string',
+            'contact_number' => 'required|string|max:15',
+            'status' => 'required|string|max:255',
+            'academic_year' => 'required|string|max:255',
+            'department_code' => 'required|string|max:255',
+            'year_level' => 'required|integer|min:1',
+            'guardian_name' => 'required|string|max:255',
+            'guardian_contact' => 'required|string|max:15',
+        ]);
         
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Student successfully created!',
-            'data' => $studentData
-        ], 201);
-
-    } catch (\Exception $e) {
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
         
-        return response()->json([
-            'status' => 'error',
-            'message' => 'An error occurred while creating the student record.',
-            'error' => $e->getMessage()
-        ], 500);
-    }
-}
+        try {
+            // Map validated data to individual variables
+            $studentNumber = $validator->validated()['student_number'];
+            $firstName = $validator->validated()['first_name'];
+            $middleName = $validator->validated()['middle_name'] ?? null;  // Null if not provided
+            $lastName = $validator->validated()['last_name'];
+            $age = $validator->validated()['age'];
+            $gender = $validator->validated()['sex'];
+            $birthdate = $validator->validated()['birthdate'];
+            $age = Carbon::parse($birthdate)->age;
+            $email = $validator->validated()['email'];
+            $address = $validator->validated()['address'];
+            $contactNumber = $validator->validated()['contact_number'];
+            $status = $validator->validated()['status'];
+            $academicYear = $validator->validated()['academic_year'];
+            $departmentCode = $validator->validated()['department_code'];
+            $yearLevel = $validator->validated()['year_level'];
+            $guardianName = $validator->validated()['guardian_name'];
+            $guardianContact = $validator->validated()['guardian_contact'];
+            
+        
+            // Now insert data into the database
+            $studentId = DB::table('students')->insertGetId([
+                'student_number' => $studentNumber,
+                'first_name' => $firstName,
+                'middle_name' => $middleName,
+                'last_name' => $lastName,
+                'age' => $age,
+                'gender' => $gender,
+                'birthdate' => $birthdate,
+                'email_address' => $email,
+                'current_address' => $address,
+                'contact_number' => $contactNumber,
+                'enrollment_status' => $status,
+                // 'guardian_name' => $guardianName,
+                // 'guardian_contact' => $guardianContact,
+                
+            ]);
 
+            $acad = DB::table('student_school_infos')->insert([
+                'student_id' => $studentId,
+                'academic_year' => $academicYear,
+                'department_code' => $departmentCode,
+                'year_level' => $yearLevel,
+                
+            ]);
+        
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Student successfully created!',
+                'data' => [
+                    'student_id' => $studentId,
+                ],
+            ], 201);
+        
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while creating the student record.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+        
+    }
 }

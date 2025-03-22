@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-        
+            $table->unsignedBigInteger('student_number')->unique();
             $table->string('first_name');
             $table->string('middle_name')->nullable();
             $table->string('last_name');
@@ -28,11 +28,7 @@ return new class extends Migration
             $table->string('email_address')->nullable();
             $table->string('contact_number')->nullable();
         
-            $table->date('enrollment_date');
-            $table->string('enrollment_for');
             $table->unsignedBigInteger('program_id')->nullable();
-            $table->string('desired_major')->nullable();
-        
             $table->string('enrollment_status')->nullable();
         
             $table->timestamps();

@@ -10,6 +10,7 @@ class Student extends Model
     use HasFactory;
 
     protected $fillable = [ 
+        'student_number',
         'first_name',
         'middle_name',
         'last_name',
@@ -21,10 +22,7 @@ class Student extends Model
         'pace_of_birth',
         'current_address',
         'email_address',
-        'contact_number',
-        'enrollment_date',
-        'enrollment_for',
-        'desired_major',
+        'contact_number', 
         'enrollment_status',
     ];
 }
