@@ -153,7 +153,7 @@ class ApiController extends Controller
         $studentsData = $response->json();
 
         foreach ($studentsData as $student) {
-            Student::create([
+            $studentId = DB::table('students')->insertGetId([
                 'student_number' => $student['student_number'],
                 'first_name' => $student['first_name'],
                 'middle_name' => $student['middle_name'] ?? null,  
@@ -170,6 +170,14 @@ class ApiController extends Controller
                 'year_level' => $student['year_level'],
                 'guardian_name' => $student['guardian_name'],
                 'guardian_contact' => $student['guardian_contact'],
+                'enrollment_status' => 'enrolled',
+            ]);
+
+            $acad = DB::table('student_school_infos')->insert([
+                'student_id' => $studentId,
+                'academic_year' => $academicYear,
+                'department_code' => $departmentCode,
+                'year_level' => $yearLevel,
             ]);
         }
 
