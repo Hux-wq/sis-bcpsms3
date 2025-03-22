@@ -21,7 +21,7 @@
                         {{ $student->first_name ?? 'N/A'}}
                         {{ $student->middle_name ?? 'N/A'}}
                     </td>
-                    <td>{{ $user->student_number ?? 'N/A'}}</td>
+                    <td>{{ $student->student_number ?? 'N/A'}}</td>
                     <td>{{ $student->age ?? 'N/A' }}</td>
                     <td>{{ $student->email_address ?? 'N/A' }}</td>
                     <td>
