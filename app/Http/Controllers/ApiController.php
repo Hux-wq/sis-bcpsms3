@@ -79,7 +79,6 @@ class ApiController extends Controller
             $firstName = $validator->validated()['first_name'];
             $middleName = $validator->validated()['middle_name'] ?? null;  // Null if not provided
             $lastName = $validator->validated()['last_name'];
-            $age = $validator->validated()['age'];
             $gender = $validator->validated()['sex'];
             $birthdate = $validator->validated()['birthdate'];
             $age = Carbon::parse($birthdate)->age;
@@ -132,7 +131,8 @@ class ApiController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while creating the student record.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                
             ], 500);
         }
         
