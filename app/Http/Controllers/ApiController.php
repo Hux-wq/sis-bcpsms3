@@ -52,7 +52,6 @@ class ApiController extends Controller
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
-            'age' => 'required|integer|min:18',
             'sex' => 'required|in:male,female,other',
             'birthdate' => 'required|date',
             'email' => 'required|email|unique:students,email_address',
