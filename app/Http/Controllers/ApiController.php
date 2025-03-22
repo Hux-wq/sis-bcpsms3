@@ -164,8 +164,7 @@ class ApiController extends Controller
                 'email_address' => $student['email'],
                 'current_address' => $student['address'],
                 'contact_number' => $student['contact_number'],
-                'guardian_name' => $student['guardian_name'],
-                'guardian_contact' => $student['guardian_contact'],
+                
             ]);
 
             $acad = DB::table('student_school_infos')->insert([
