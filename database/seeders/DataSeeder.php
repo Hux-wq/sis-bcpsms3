@@ -46,6 +46,7 @@ DB::table('sections')->insert($sectionData);
 
 // Student Data
 $studentData = [
+    'student_number' => 21452222,
     'first_name' => 'John',
     'middle_name' => 'Michael',
     'last_name' => 'Doe',
@@ -58,10 +59,8 @@ $studentData = [
     'current_address' => '123 Main St, Manila',
     'email_address' => 'john.doe@example.com',
     'contact_number' => '09123456789',
-    'enrollment_date' => '2023-08-01',
-    'enrollment_for' => '4th Year',
+   
     'program_id' => $program,
-    'desired_major' => 'Software Development',
     'enrollment_status' => 'Enrolled',
 ];
 
@@ -111,6 +110,7 @@ $sectionIds = DB::table('sections')->where('department_id', $departmentId)->pluc
 
 // Student Data (Second Student)
 $studentData2 = [
+    'student_number' => 21472110,
     'first_name' => 'Alice',
     'middle_name' => 'Jane',
     'last_name' => 'Smith',
@@ -123,10 +123,8 @@ $studentData2 = [
     'current_address' => '456 Oak St, Cebu',
     'email_address' => 'alice.smith@example.com',
     'contact_number' => '09987654321',
-    'enrollment_date' => '2023-08-01',
-    'enrollment_for' => '4th Year',
+    
     'program_id' => $programId,
-    'desired_major' => 'Data Science',
     'enrollment_status' => 'Enrolled',
 ];
 
@@ -168,6 +166,7 @@ $sectionIds = DB::table('sections')->where('department_id', $departmentId)->pluc
 
 // Student Data (Third Student)
 $studentData3 = [
+    'student_number' => 21471111,
     'first_name' => 'Robert',
     'middle_name' => 'William',
     'last_name' => 'Brown',
@@ -180,10 +179,8 @@ $studentData3 = [
     'current_address' => '789 Pine St, Davao',
     'email_address' => 'robert.brown@example.com',
     'contact_number' => '09876543210',
-    'enrollment_date' => '2023-08-01',
-    'enrollment_for' => '4th Year',
+   
     'program_id' => $programId,
-    'desired_major' => 'Game Development',
     'enrollment_status' => 'Enrolled',
 ];
 
@@ -224,6 +221,7 @@ $sectionIds = DB::table('sections')->where('department_id', $departmentId)->pluc
 
 // Student Data (Fourth Student)
 $studentData4 = [
+    'student_number' => 21000230,
     'first_name' => 'Emily',
     'middle_name' => 'Rose',
     'last_name' => 'Garcia',
@@ -236,10 +234,8 @@ $studentData4 = [
     'current_address' => '1011 Acacia St, Laguna',
     'email_address' => 'emily.garcia@example.com',
     'contact_number' => '09771122334',
-    'enrollment_date' => '2023-08-01',
-    'enrollment_for' => '4th Year',
+ 
     'program_id' => $programId,
-    'desired_major' => 'Artificial Intelligence',
     'enrollment_status' => 'Enrolled',
 ];
 
@@ -280,6 +276,7 @@ $sectionIds = DB::table('sections')->where('department_id', $departmentId)->pluc
 
 // Student Data (Fifth Student)
 $studentData5 = [
+    'student_number' => 21332020,
     'first_name' => 'David',
     'middle_name' => 'Lee',
     'last_name' => 'Reyes',
@@ -292,10 +289,8 @@ $studentData5 = [
     'current_address' => '1213 Sampaguita St, Quezon City',
     'email_address' => 'david.reyes@example.com',
     'contact_number' => '09665544332',
-    'enrollment_date' => '2023-08-01',
-    'enrollment_for' => '4th Year',
+ 
     'program_id' => $programId,
-    'desired_major' => 'Cybersecurity',
     'enrollment_status' => 'Enrolled',
 ];
 
@@ -361,6 +356,7 @@ $newSectionIds = DB::table('sections')->where('department_id', $newDepartmentId)
 
 // Student Data (Sixth Student - Engineering)
 $studentData6 = [
+    'student_number' => 21457777,
     'first_name' => 'Sophia',
     'middle_name' => 'Marie',
     'last_name' => 'Santos',
@@ -373,10 +369,8 @@ $studentData6 = [
     'current_address' => '1415 Laurel St, Batangas',
     'email_address' => 'sophia.santos@example.com',
     'contact_number' => '09554433221',
-    'enrollment_date' => '2023-08-01',
-    'enrollment_for' => '4th Year',
+
     'program_id' => $newProgramId,
-    'desired_major' => 'Power Systems',
     'enrollment_status' => 'Enrolled',
 ];
 
@@ -442,6 +436,7 @@ $accountancySectionIds = DB::table('sections')->where('department_id', $business
 
 // Student Data (Seventh Student - Accountancy)
 $studentData7 = [
+    'student_number' => 21556170,
     'first_name' => 'Isabella',
     'middle_name' => 'Grace',
     'last_name' => 'Cruz',
@@ -454,10 +449,8 @@ $studentData7 = [
     'current_address' => '1617 Rosario St, Iloilo',
     'email_address' => 'isabella.cruz@example.com',
     'contact_number' => '09443322110',
-    'enrollment_date' => '2023-08-01',
-    'enrollment_for' => '4th Year',
+  
     'program_id' => $accountancyProgramId,
-    'desired_major' => 'Financial Accounting',
     'enrollment_status' => 'Enrolled',
 ];
 
@@ -497,6 +490,7 @@ $sectionIds = DB::table('sections')->where('department_id', $departmentId)->pluc
 
 // Student Data (Eighth Student - Computer Science with variation)
 $studentData8 = [
+    'student_number' => 21112127,
     'first_name' => 'Ethan',
     'middle_name' => 'James',
     'last_name' => 'Ramos',
@@ -509,10 +503,8 @@ $studentData8 = [
     'current_address' => '1819 Kalayaan Ave, Taguig',
     'email_address' => 'ethan.ramos@example.com',
     'contact_number' => '09332211009',
-    'enrollment_date' => '2023-08-01',
-    'enrollment_for' => '4th Year',
+
     'program_id' => $programId, // Same program as previous CS students
-    'desired_major' => 'Mobile Development',
     'enrollment_status' => 'Enrolled',
 ];
 
@@ -578,6 +570,7 @@ $communicationSectionIds = DB::table('sections')->where('department_id', $artsSc
 
 // Student Data (Ninth Student - Communication)
 $studentData9 = [
+    'student_number' => 21452111,
     'first_name' => 'Olivia',
     'middle_name' => 'Grace',
     'last_name' => 'Reyes',
@@ -590,10 +583,8 @@ $studentData9 = [
     'current_address' => '2021 Osmeña Blvd, Cebu City',
     'email_address' => 'olivia.reyes@example.com',
     'contact_number' => '09221100998',
-    'enrollment_date' => '2023-08-01',
-    'enrollment_for' => '4th Year',
+
     'program_id' => $communicationProgramId,
-    'desired_major' => 'Journalism',
     'enrollment_status' => 'Enrolled',
 ];
 
@@ -658,6 +649,7 @@ $elementaryEducationSectionIds = DB::table('sections')->where('department_id', $
 
 // Student Data (Tenth Student - Elementary Education)
 $studentData10 = [
+    'student_number' => 21952124,
     'first_name' => 'Liam',
     'middle_name' => 'Gabriel',
     'last_name' => 'Fernandez',
@@ -670,10 +662,8 @@ $studentData10 = [
     'current_address' => '2223 Session Rd, Baguio City',
     'email_address' => 'liam.fernandez@example.com',
     'contact_number' => '09110099887',
-    'enrollment_date' => '2023-08-01',
-    'enrollment_for' => '4th Year',
+ 
     'program_id' => $elementaryEducationProgramId,
-    'desired_major' => 'General Education',
     'enrollment_status' => 'Enrolled',
 ];
 

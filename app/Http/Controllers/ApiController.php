@@ -153,6 +153,7 @@ class ApiController extends Controller
         $studentsData = $response->json();
 
         foreach ($studentsData as $student) {
+
             $studentId = DB::table('students')->insertGetId([
                 'student_number' => $student['student_number'],
                 'first_name' => $student['first_name'],
@@ -165,7 +166,6 @@ class ApiController extends Controller
                 'current_address' => $student['address'],
                 'contact_number' => $student['contact_number'],
                 'enrollment_status' => $student['status'],
-                
             ]);
 
             $acad = DB::table('student_school_infos')->insert([
