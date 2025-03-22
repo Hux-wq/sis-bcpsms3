@@ -159,7 +159,7 @@ class ApiController extends Controller
                 'middle_name' => $student['middle_name'] ?? null,  
                 'last_name' => $student['last_name'],
                 'age' =>  Carbon::parse($student['birthday'])->age, 
-                'sex' => $student['sex'],
+                'gender' => $student['sex'],
                 'birthdate' => $student['birthday'],
                 'email' => $student['email'],
                 'address' => $student['address'],
