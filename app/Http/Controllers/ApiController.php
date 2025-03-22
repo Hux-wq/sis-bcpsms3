@@ -16,7 +16,7 @@ class ApiController extends Controller
     public function students()
     {
         try {
-            $students = Student::all();
+            $students = Student::with(['studentSchoolInfo'])->get();
 
             return response()->json([
                 'status' => 'success',
