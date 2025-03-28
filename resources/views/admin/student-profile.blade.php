@@ -83,7 +83,7 @@
 
         <div class="card p-3">
     
-            <h4>Attendance Overview</h4>
+          <h5 class="card-title">Attendance Overview</h5>
     
             <div class="row">
     
@@ -173,14 +173,72 @@
     
     </div>
 
+    <div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Semestral Grade Overview</h5>
+
+          <!-- Bordered Tabs -->
+          <ul class="nav nav-tabs nav-tabs-bordered" id="borderedTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#bordered-home" type="button" role="tab" aria-controls="home" aria-selected="true">1st Year</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#bordered-profile" type="button" role="tab" aria-controls="profile" aria-selected="false">2nd Year</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#bordered-contact" type="button" role="tab" aria-controls="contact" aria-selected="false">3rd Year</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#4th" type="button" role="tab" aria-controls="4th" aria-selected="false">4th Year</button>
+            </li>
+          </ul>
+          <div class="tab-content pt-2" id="borderedTabContent">
+            <div class="tab-pane fade show active" id="bordered-home" role="tabpanel" aria-labelledby="home-tab">
+              @foreach ($acad_records as $record)
+                @if ($record['year_level'] == 1)
+                    <p>Semester: {{ $record['semester'] ?? 'N/A'}}</p>
+                    <p>Cumulative GPA: {{ $record['cumulative_gpa'] ?? 'N/A'}}</p>
+                @endif
+              @endforeach
+            </div>
+            <div class="tab-pane fade" id="bordered-profile" role="tabpanel" aria-labelledby="profile-tab">
+              @foreach ($acad_records as $record)
+                @if ($record['year_level'] == 2)
+                    <p>Semester: {{ $record['semester'] ?? 'N/A'}}</p>
+                    <p>Cumulative GPA: {{ $record['cumulative_gpa'] ?? 'N/A'}}</p>
+                @endif
+              @endforeach
+            </div>
+            <div class="tab-pane fade" id="bordered-contact" role="tabpanel" aria-labelledby="contact-tab">
+              @foreach ($acad_records as $record)
+                @if ($record['year_level'] == 3)
+                    <p>Semester: {{ $record['semester'] ?? 'N/A'}}</p>
+                    <p>Cumulative GPA: {{ $record['cumulative_gpa'] ?? 'N/A'}}</p>
+                @endif
+              @endforeach
+            </div>
+            <div class="tab-pane fade" id="4th" role="tabpanel" aria-labelledby="contact-tab">
+              @foreach ($acad_records as $record)
+                @if ($record['year_level'] == 4)
+                    <p>Semester: {{ $record['semester'] ?? 'N/A'}}</p>
+                    <p>Cumulative GPA: {{ $record['cumulative_gpa'] ?? 'N/A'}}</p>
+                @endif
+              @endforeach
+            </div>
+          </div><!-- End Bordered Tabs -->
+
+        </div>
+      </div>
+    </div>
+
     <div class="row m-0">
 
         <div class="col-12 card">
-    
-            <h4 class="pt-3 ps-1">Grade Performance <Link href="/Students/Profile/View/{students.id}/AcademicPerformance"><i class="fa-solid fa-arrow-right"></i></Link></h4>
+            
     
             <div class="row p-3">
-    
+              <h5 class="card-title">Grade Performance <Link href="/Students/Profile/View/{students.id}/AcademicPerformance"><i class="fa-solid fa-arrow-right"></i></Link></h5>
     
                 <div class="col-12 col-lg-6">
     

@@ -34,13 +34,7 @@
     </x-nav-link>
 
     <hr class="sidebar-divider">
-    <li class="nav-heading">Enrollees & Students</li>
-
-    <x-nav-link :href="route('admin.pending-enrollees')" :active="request()->routeIs('enrollees')">
-        <i class="fa-solid fa-graduation-cap" style="width: 15px"></i>
-        {{ __('Pending Enrollees') }}
-    </x-nav-link>
-
+    <li class="nav-heading">Students</li>
 
     <x-nav-link :href="route('admin.student')" :active="request()->routeIs('student')">
         <i class="fa-solid fa-graduation-cap" style="width: 15px"></i>

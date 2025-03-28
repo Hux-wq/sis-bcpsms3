@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\AcademicRecord;
 
 class AdminStudentTableController extends Controller
 {
@@ -22,7 +23,8 @@ class AdminStudentTableController extends Controller
     {
 
         $student = Student::findOrFail($id);
+        $acad_records = AcademicRecord::where('student_id', $id)->get();
     
-        return view('admin.student-profile', compact('student'));
+        return view('admin.student-profile', compact('student','acad_records'));
     }
 }

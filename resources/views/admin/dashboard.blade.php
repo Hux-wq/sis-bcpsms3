@@ -20,7 +20,7 @@
                       </div>
                       <div class="ps-3">
                         <h5>Students Enrolled</h5>  
-                        <h6>1</h6>
+                        <h6>{{$student_enrolled_count}}</h6>
                       </div>
                     </div>
                   </div>
@@ -41,7 +41,7 @@
                       </div>
                       <div class="ps-3">
                         <h5>Courses</h5>
-                        <h6>1</h6>
+                        <h6>{{$courses_count}}</h6>
                       </div>
                     </div>
                   </div>
@@ -63,7 +63,7 @@
                       </div>
                       <div class="ps-3">
                         <h5>Department</h5>
-                        <h6>1</h6>
+                        <h6>{{$departments_count}}</h6>
                       </div>
                     </div>
     
@@ -86,7 +86,7 @@
                       </div>
                       <div class="ps-3">
                         <h5>Program</h5>
-                        <h6>1</h6>
+                        <h6>{{$programs_count}}</h6>
                       </div>
                     </div>
     
@@ -109,7 +109,7 @@
                       </div>
                       <div class="ps-3">
                         <h5>Classes</h5>
-                        <h6>4</h6>
+                        <h6>{{$sections_count}}</h6>
                       </div>
                     </div>
     
