@@ -55,7 +55,7 @@
         {{ __('Requests') }}
     </x-nav-link>
 
-    <x-nav-link :href="route('admin.document')" :active="request()->routeIs('students')">
+    <x-nav-link :href="route('admin.report')" :active="request()->routeIs('report')">
         <i class="fa-solid fa-chart-simple"></i>
         {{ __('Reports') }}
     </x-nav-link>
