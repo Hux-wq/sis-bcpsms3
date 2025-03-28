@@ -11,7 +11,7 @@
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block drop-down  ps-2">K. Anderson</span>
+            <span class="d-none d-md-block drop-down  ps-2">{{Auth::User()->name}}</span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">

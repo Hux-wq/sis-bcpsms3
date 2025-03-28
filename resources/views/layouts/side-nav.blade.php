@@ -15,10 +15,10 @@
         </div>
         <div style="display: flex; flex-direction: column; align-items: center; margin-top: 24px; text-align: center;">
             <div style="font-weight: 500; color: #fff;">
-                Name
+                {{Auth::User()->name}}
             </div>
             <div style="margin-top: 4px; font-size: 14px; color: #fff;">
-                ID
+                {{Auth::User()->id}}
             </div>
         </div>
     </div>
