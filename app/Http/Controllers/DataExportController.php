@@ -24,7 +24,7 @@ class DataExportController extends Controller
 
         $writer->openToFile($filePath);
 
-        $writer->addRow(Row::fromValues(['id','name','email','age','birthdate','address']));
+        $writer->addRow(Row::fromValues(['id','name','email','age','gender','birthdate','address']));
 
         Student::cursor()->each(function ($user) use ($writer){
             $writer->addRow(Row::fromValues([
@@ -32,6 +32,7 @@ class DataExportController extends Controller
                 $user->last_name .' '. $user->suffix_name.', '. $user->first_name.' '. $user->middle_name,
                 $user->email_address,
                 $user->age,
+                $user->gender,
                 $user->birthdate,
                 $user->current_address,
             ]));
