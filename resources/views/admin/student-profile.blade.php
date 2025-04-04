@@ -17,12 +17,73 @@
             
                             <img src="/img/profile-img.jpg" alt="Profile" class="rounded-circle">
                             <h1 class="text-capitalize fs-5  fw-bold">{{$student->first_name}} {{$student->middle_name}} {{$student->last_name}}</h1>
-                            <h6>{{$student->email}}</h6>
-                            <div class="social-links mt-2">
-                                <a href="/" class="twitter"><i class="fa-brands fa-twitter"></i></a>
-                                <a href="/" class="facebook"><i class="fa-brands fa-facebook"></i></a>
-                                <a href="/" class="instagram"><i class="fa-brands fa-instagram"></i></a>
-                                <a href="/" class="linkedin"><i class="fa-brands fa-linkedin"></i></a>
+                            <h6>{{$student->student_number}}</h6>
+                            <div>
+                              
+                              <form id="createAccountForm">
+                                @csrf
+                                <input type="hidden" name="email" value="{{$student->student_number . '@student.com'}}">
+                                <input type="hidden" name="password" value="{{$student->last_name . '1234!'}}">
+                                <input type="hidden" name="id" value="{{$student->id}}">
+                                <button type="button" class="btn btn-success" id="createAccountButton">Create Account</button>
+                              </form>
+
+                              <script>
+                                document.getElementById('createAccountButton').addEventListener('click', function(event) {
+                                    event.preventDefault(); // Prevent default form submission
+                            
+                                    Swal.fire({
+                                        title: 'Are you sure?',
+                                        text: "Do you want to create this account?",
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Yes, create it!',
+                                        cancelButtonText: 'No, cancel!',
+                                        reverseButtons: true
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            // If user confirms, send AJAX request
+                                            const formData = new FormData(document.getElementById('createAccountForm'));
+                            
+                                            fetch("{{ route('studentUserAccount.create') }}", {
+                                                method: 'POST',
+                                                body: formData,
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.status === 'success') {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Success!',
+                                                        text: data.message,
+                                                        showConfirmButton: true
+                                                    }).then(() => {
+                                                        // Optionally, redirect after success
+                                                        // window.location.href = "";
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Oops...',
+                                                        text: data.message,
+                                                        showConfirmButton: true
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Oops...',
+                                                    text: 'An error occurred while creating the account. Please try again.',
+                                                    showConfirmButton: true
+                                                });
+                                            });
+                                        } else {
+                                            Swal.fire('Cancelled', 'The account creation has been cancelled.', 'error');
+                                        }
+                                    });
+                                });
+                              </script>
                             </div>
                                     
                         </div>
@@ -285,7 +346,7 @@
                             }
                         });
 
-                    </script>
+                    </>
                       
     
                 </div>

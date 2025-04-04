@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UploadDocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,10 +31,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+Route::post('/upload/files', [UploadDocumentController::class, 'store'])->name('uploadfiles.store');
+
 require __DIR__.'/auth.php';
 
 
 require __DIR__.'/admin.php';
+
+require __DIR__.'/student.php';
 
 require __DIR__.'/api.php';
 

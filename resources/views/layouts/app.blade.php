@@ -23,7 +23,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
         <!-- Vendor CSS Files -->
-        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        {{-- <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> --}}
         <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
         <link href="/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
         <link href="/vendor/quill/quill.snow.css" rel="stylesheet">
@@ -77,7 +77,7 @@
 
         <!-- Vendor JS Files -->
         <script src="/vendor/apexcharts/apexcharts.min.js"></script>
-        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        {{-- <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> --}}
         <script src="/vendor/chart.js/chart.umd.js"></script>
         <script src="/vendor/echarts/echarts.min.js"></script>
         <script src="/vendor/quill/quill.js"></script>

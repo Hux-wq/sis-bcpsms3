@@ -13,14 +13,43 @@
         <div style="display: flex; align-items: center; justify-content: center; width: 96px; height: 96px; border-radius: 50%; background-color: #334155; color: #e2e8f0; font-size: 48px; font-weight: bold; text-transform: uppercase; line-height: 1;">
             LC
         </div>
-        <div style="display: flex; flex-direction: column; align-items: center; margin-top: 24px; text-align: center;">
+        
+
+        @if (Auth::User()->isAdmin())
+            <div style="display: flex; flex-direction: column; align-items: center; margin-top: 24px; text-align: center;">
+                <div style="font-weight: 500; color: #fff;">
+                    {{Auth::User()->name}}
+
+                    
+                </div>
+                <div style="margin-top: 4px; font-size: 14px; color: #fff;">
+                    {{Auth::User()->id}}
+                    
+                </div>
+            </div>
+        @elseif (Auth::User()->isStudent())
+            @php
+            $id = Auth::user()->linking_id;
+            $student = App\Models\Student::findOrFail($id); 
+            @endphp
+            <div style="display: flex; flex-direction: column; align-items: center; margin-top: 24px; text-align: center;">
             <div style="font-weight: 500; color: #fff;">
-                {{Auth::User()->name}}
+                {{ $student->first_name }} 
+                {{ $student->middle_name }} 
+                {{ $student->last_name }}
             </div>
             <div style="margin-top: 4px; font-size: 14px; color: #fff;">
-                {{Auth::User()->id}}
+                {{ $student->student_number }}
             </div>
-        </div>
+            </div>  
+        @endif
+        
+
+        
+
+
+             
+               
     </div>
 
     <hr class="sidebar-divider">
@@ -33,13 +62,23 @@
       </span>
     </x-nav-link>
 
-    <hr class="sidebar-divider">
-    <li class="nav-heading">Students</li>
+    @if(Auth::check())
 
-    <x-nav-link :href="route('admin.student')" :active="request()->routeIs('student')">
-        <i class="fa-solid fa-graduation-cap" style="width: 15px"></i>
-        {{ __('Students') }}
-    </x-nav-link>
+        @if(Auth::user()->isAdmin())
+      
+            <hr class="sidebar-divider">
+            <li class="nav-heading">Students</li>
+
+            <x-nav-link :href="route('admin.student')" :active="request()->routeIs('student')">
+                <i class="fa-solid fa-graduation-cap" style="width: 15px"></i>
+                {{ __('Students') }}
+            </x-nav-link>
+        
+        @endif
+        
+    @endif
+
+    
 
 
     <hr class="sidebar-divider">
@@ -50,15 +89,25 @@
         {{ __('Documents') }}
     </x-nav-link>
 
-    <x-nav-link :href="route('admin.document')" :active="request()->routeIs('request')">
+    <x-nav-link :href="route('admin.request')" :active="request()->routeIs('request')">
         <i class="fa-solid fa-magnifying-glass" style="width: 15px;"></i>
         {{ __('Requests') }}
     </x-nav-link>
 
-    <x-nav-link :href="route('admin.report')" :active="request()->routeIs('report')">
-        <i class="fa-solid fa-chart-simple"></i>
-        {{ __('Reports') }}
-    </x-nav-link>
+    @if(Auth::check())
+
+        @if(Auth::user()->isAdmin())
+
+            <x-nav-link :href="route('admin.report')" :active="request()->routeIs('report')">
+                <i class="fa-solid fa-chart-simple"></i>
+                {{ __('Reports') }}
+            </x-nav-link>
+        
+        @endif
+
+    @endif
+
+    
 
     
     <hr class="sidebar-divider">

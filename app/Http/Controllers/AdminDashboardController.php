@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Course;
@@ -13,6 +13,11 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
+        if(Auth::User()->isStudent())
+        {
+            return redirect('/s/dashboard');
+        }
+
         $students = Student::where('enrollment_status', 'Enrolled')->count();
         $courses = Course::count();
         $programs = Program::count();

@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminStudentTableController;
 use App\Http\Controllers\AdminPendingEnrolleesController;
 use App\Http\Controllers\PendingDocumentController;
 use App\Http\Controllers\AdminReportController;
+use App\Http\Controllers\AdminRequestController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -27,10 +28,12 @@ Route::get('/document', [AdminDocumentController::class, 'index'])->middleware([
 
 
 Route::get('/student/profile/{id}', [AdminStudentTableController::class, 'studentProfile'])->middleware(['auth', 'verified']);
-
+Route::post('/student/UserAccount/Create', [AdminStudentTableController::class, 'studentCreateUserAccount'])->middleware(['auth', 'verified'])->name('studentUserAccount.create');
 
 
 
 
 Route::get('/report', [AdminReportController::class, 'index'])->middleware(['auth', 'verified'])->name('admin.report');
 
+
+Route::get('/request', [AdminRequestController::class, 'index'])->middleware(['auth', 'verified'])->name('admin.request');
