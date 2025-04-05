@@ -8,10 +8,9 @@
                 <tr>
                     <th>No</th>
                     <th>Name</th>
+                    <th>Type</th>
                     <th>Size</th>
-                    <th>type</th>
                     <th>File</th>
-                    
                     
                 </tr>
             </thead>
