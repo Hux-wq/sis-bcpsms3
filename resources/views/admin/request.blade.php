@@ -20,8 +20,8 @@
             <tr>
                 <td>{{$req->id}}</td>
                 <td>{{$req->student_id}}</td>
-                <td class="text-capitalize">{{$req->file_for}}</td>
-                <td>{{$req->file_size}}Kb</td>
+                <td class="text-capitalize">{{$req->document}}</td>
+                <td>{{$req->status}}</td>
                 
                 
             </tr>
