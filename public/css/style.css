@@ -626,7 +626,8 @@ h6 {
   scrollbar-width: thin;
   scrollbar-color: #aab7cf transparent;
   box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
-  background-color: #1e3a8a;
+  /* background-color: #1e3a8a; */
+   background-color: #3e5973; 
 }
 
 .sidebar hr.sidebar-divider {
@@ -709,7 +710,7 @@ h6 {
   font-weight: 600;
   color: #fff;
   transition: 0.3;
-  background: #1e3a8a;
+  background: #3e5973;
   padding: 10px 15px;
   border-radius: 4px;
 }
@@ -731,7 +732,7 @@ h6 {
 
 .sidebar-nav .nav-link:hover {
   color: #fff;
-  background: #2b38a6;
+  background: #5684ae
 }
 
 .sidebar-nav .nav-link:hover i {
