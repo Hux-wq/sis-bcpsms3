@@ -16,7 +16,7 @@ use App\Http\Controllers\UploadDocumentController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth/login');
 });
 
 Route::get('/students', function () {
