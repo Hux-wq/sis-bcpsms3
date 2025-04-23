@@ -44,12 +44,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
         <link rel="stylesheet" href="/resources/css/app.css">
+        <link rel="stylesheet" href="/resources/css/custom-hover.css">
         <!-- Scripts -->
         <link rel="stylesheet" href="/resources/js/app.js">
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
-    <body class="font-sans antialiased">
+<body class="font-sans antialiased">
 
             {{-- @include('layouts.navigation') --}}
             @include('layouts.header')

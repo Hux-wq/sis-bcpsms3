@@ -31,4 +31,19 @@ class Student extends Model
     {
         return   $this->hasOne(StudentSchoolInfo::class);
     }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
+
+    public function academicRecords()
+    {
+        return $this->hasMany(AcademicRecord::class);
+    }
 }
