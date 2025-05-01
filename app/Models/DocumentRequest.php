@@ -9,5 +9,5 @@ class DocumentRequest extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['student_id', 'document', 'status'];
+    protected $fillable = ['student_id', 'document', 'status', 'date_needed'];
 }

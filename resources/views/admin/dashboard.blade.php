@@ -179,9 +179,6 @@
                     </div>
                   </div><!-- End Revenue Card -->
 
-              
-                 
-        
                   <!-- Customers Card -->
                   <div class="col-xxl-4 col-xl-12">
         
@@ -667,7 +664,7 @@
   }
 </style>
 
-<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+
 
 <script>
   if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {

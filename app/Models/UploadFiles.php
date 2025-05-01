@@ -20,8 +20,22 @@ class UploadFiles extends Model
         'file_for'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(Student::class);
-    }
+public function user()
+{
+    return $this->belongsTo(Student::class);
+}
+
+public function getReadableTypeAttribute()
+{
+    $types = [
+        'application/pdf' => 'PDF ',
+        'application/docx' => 'Word ',
+        'application/doc' => 'Word ',
+        'application/jpg' => 'Image/jpg ',
+        'application/png' => 'Image/png ',
+        'application/txt' => 'Text ',
+    ];
+
+    return $types[strtolower($this->file_type)] ?? strtoupper($this->file_type) . ' File';
+}
 }
