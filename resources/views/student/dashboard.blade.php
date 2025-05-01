@@ -43,7 +43,7 @@
                             <div class="row">
                                 <div class="col-lg-3 col-md-4 label fw-bold">Gender</div>
                                 <div class="col-lg-9 col-md-8 text-capitalize">{{ $student->gender ?? '' }}</div>
-                            </div>
+                            </div> 
                             <div class="row">
                                 <div class="col-lg-3 col-md-4 label fw-bold">Date of Birth</div>
                                 <div class="col-lg-9 col-md-8 text-capitalize">{{ $student->birthdate ?? '' }}</div>

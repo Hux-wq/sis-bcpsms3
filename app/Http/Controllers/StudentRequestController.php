@@ -9,7 +9,21 @@ class StudentRequestController extends Controller
 {
     public function index()
     {
-        return view('student.request');
+        $userId = Auth::user()->linking_id;
+        $reqs = DocumentRequest::where('student_id', $userId)->paginate(5);
+
+        // Fetch related file paths for accepted requests
+        $filePaths = [];
+        foreach ($reqs as $req) {
+            if ($req->status === 'accepted') {
+                $file = \App\Models\UploadFiles::where('student_id', $userId)
+                    ->where('file_for', $req->document)
+                    ->first();
+                $filePaths[$req->id] = $file ? $file->file_path : null;
+            }
+        }
+
+        return view('student.request', compact('reqs', 'filePaths'));
     }
 
 

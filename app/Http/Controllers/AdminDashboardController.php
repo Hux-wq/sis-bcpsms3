@@ -28,6 +28,12 @@ class AdminDashboardController extends Controller
         $departmentsCount = Department::count();
         $departments = Department::get(['code', 'name',]);
 
+        // Fetch recent uploaded documents (limit 5)
+        $recentUploads = \App\Models\UploadFiles::with('user')->orderBy('created_at', 'desc')->limit(5)->get();
+
+        // Fetch recent enrolled students (limit 5)
+        $recentEnrolledStudents = Student::with('program')->where('enrollment_status', 'Enrolled')->orderBy('created_at', 'desc')->limit(5)->get();
+
         return view('admin.dashboard',[
             'student_enrolled_count' => $studentsCount,
             'students' => $students,
@@ -38,6 +44,8 @@ class AdminDashboardController extends Controller
             'sections_count' => $sections,
             'departments_count' => $departmentsCount,
             'departments' => $departments,
+            'recentUploads' => $recentUploads,
+            'recentEnrolledStudents' => $recentEnrolledStudents,
         ]);
     }
 }

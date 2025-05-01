@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use App\Models\Student;
+use App\Models\DocumentRequest;
 
 class StudentDashboardController extends Controller
 {
@@ -34,6 +36,31 @@ class StudentDashboardController extends Controller
             $lateTimes[] = ['08:05 AM', '08:10 AM']; // static example
         }
 
+        // Fetch requested documents for the student
+        $requestedDocuments = DocumentRequest::where('student_id', $linking_id)
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        // Dummy data for expenses
+        $recentExpenses = [
+            ['title' => 'Books Purchase', 'amount' => 1500.00, 'date' => '2023-06-01'],
+            ['title' => 'Lab Fee', 'amount' => 2000.00, 'date' => '2023-05-28'],
+            ['title' => 'Sports Fee', 'amount' => 500.00, 'date' => '2023-05-20'],
+        ];
+
+        // Dummy data for activities
+        $recentActivities = [
+            ['activity' => 'Joined Coding Club', 'date' => '2023-05-15'],
+            ['activity' => 'Attended Seminar on AI', 'date' => '2023-05-10'],
+            ['activity' => 'Volunteered for Community Service', 'date' => '2023-05-05'],
+        ];
+
+        // Share variables globally for the header layout
+        View::share('requestedDocuments', $requestedDocuments);
+        View::share('recentExpenses', $recentExpenses);
+        View::share('recentActivities', $recentActivities);
+
         return view('student.dashboard', [
             'student'=> $student,
             'latestAcademicRecord' => $latestAcademicRecord,
@@ -43,8 +70,7 @@ class StudentDashboardController extends Controller
             'absenceDates' => $absenceDates,
             'latePercentages' => $latePercentages,
             'lateDates' => $lateDates,
-            'lateTimes' => $lateTimes
+            'lateTimes' => $lateTimes,
         ]);
     }
 }
-
