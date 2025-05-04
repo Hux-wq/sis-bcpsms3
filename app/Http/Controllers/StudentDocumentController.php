@@ -12,6 +12,8 @@ class StudentDocumentController extends Controller
         $user = Auth::user();
         $files = \App\Models\UploadFiles::where('student_id', $user->linking_id)->orderBy('created_at', 'desc')->get();
 
-        return view('student.document', compact('files'));
+        $adminRequests = \App\Models\DocumentRequest::where('student_id', $user->linking_id)->orderBy('created_at', 'desc')->get();
+
+        return view('student.document', compact('files', 'adminRequests'));
     }
 }
