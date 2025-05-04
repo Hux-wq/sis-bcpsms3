@@ -37,3 +37,5 @@ Route::get('/report', [AdminReportController::class, 'index'])->middleware(['aut
 
 
 Route::get('/request', [AdminRequestController::class, 'index'])->middleware(['auth', 'verified'])->name('admin.request');
+
+Route::post('/student/{student}/request-document', [AdminRequestController::class, 'submitDocumentRequest'])->middleware(['auth', 'verified'])->name('admin.request.document.submit');
