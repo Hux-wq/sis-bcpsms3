@@ -5,6 +5,24 @@
 
     <x-page-title header="Document" :links="['document' => '/document']"/>
 
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session("success") }}',
+            });
+        </script>
+    @elseif(session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session("error") }}',
+            });
+        </script>
+    @endif
+
     <div class="card p-3">
     @php
 function GetUserName($id) {
@@ -90,43 +108,4 @@ function GetUserName($id) {
 
         </table>
     </div>
-    @if(session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: '{{ session("success") }}',
-            });
-        </script>
-    @elseif(session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: '{{ session("error") }}',
-            }); 
-        </script>
-    @endif
-    <script>
-    // Add Swal confirmation for delete forms
-    document.querySelectorAll('.delete-form').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
-        });
-    });
-</script>
-
   </x-app-layout>

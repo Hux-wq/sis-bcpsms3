@@ -62,32 +62,50 @@
                                           <button type="submit" class="btn btn-primary">Submit Request</button>
                                         </div>
                                       </form>
-                                      <!-- Toast Notification -->
-                                      <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-                                        <div id="requestToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                                          <div class="d-flex">
-                                            <div class="toast-body">
-                                              Request submitted successfully!
-                                            </div>
-                                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                                          </div>
-                                        </div>
-                                      </div>
                                       <script>
-                                        document.getElementById('requestDocumentForm').addEventListener('submit', function(event) {
-                                          event.preventDefault();
-                                          console.log('Form submitted');
-                                          var toastEl = document.getElementById('requestToast');
-                                          if (!toastEl) {
-                                            console.error('Toast element not found');
-                                            return;
-                                          }
-                                          var toast = bootstrap.Toast.getInstance(toastEl);
-                                          if (!toast) {
-                                            toast = new bootstrap.Toast(toastEl);
-                                          }
-                                          toast.show();
-                                          this.reset();
+                                        document.addEventListener('DOMContentLoaded', function () {
+                                          const form = document.getElementById('requestDocumentForm');
+                                          form.addEventListener('submit', function(event) {
+                                            event.preventDefault();
+                                            const formData = new FormData(form);
+                                            fetch("{{ route('admin.request.document.submit', ['student' => $student->id]) }}", {
+                                              method: 'POST',
+                                              body: formData,
+                                              headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                              }
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                              if (data.status === 'success') {
+                                                Swal.fire({
+                                                  icon: 'success',
+                                                  title: 'Success',
+                                                  text: data.message,
+                                                  confirmButtonText: 'OK'
+                                                }).then(() => {
+                                                  form.reset();
+                                                  var modal = bootstrap.Modal.getInstance(document.getElementById('requestDocumentModal'));
+                                                  modal.hide();
+                                                });
+                                              } else {
+                                                Swal.fire({
+                                                  icon: 'error',
+                                                  title: 'Error',
+                                                  text: data.message,
+                                                  confirmButtonText: 'OK'
+                                                });
+                                              }
+                                            })
+                                            .catch(error => {
+                                              Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: 'An error occurred while submitting the request.',
+                                                confirmButtonText: 'OK'
+                                              });
+                                            });
+                                          });
                                         });
                                       </script>
                                     </div>
@@ -125,7 +143,7 @@
                                                         showConfirmButton: true
                                                     }).then(() => {
                                                         // Optionally, redirect after success
-                                                        // window.location.href = "";
+                                                       //  window.location.href = "";
                                                     });
                                                 } else {
                                                     Swal.fire({
@@ -207,17 +225,17 @@
 
                     <div class="d-flex mb-2">
                         <div class="label col-4">Year Level</div>
-                        <div class="col-8" style="min-height: 38px; display: flex; align-items: center;">{{ $latestAcadRecord['year_level'] ?? 'N/A' }}</div>
+                        <div class="col-8" style="min-height: 38px; display: flex; align-items: center;">{{ $latestAcadRecord->year_level ?? 'N/A' }}</div>
                     </div>
 
                     <div class="d-flex mb-2">
                         <div class="label col-4">Semester</div>
-                        <div class="col-8" style="min-height: 38px; display: flex; align-items: center;">{{ $latestAcadRecord['semester'] ?? 'N/A' }}</div>
+                        <div class="col-8" style="min-height: 38px; display: flex; align-items: center;">{{ $latestAcadRecord->semester ?? 'N/A' }}</div>
                     </div>
 
                     <div class="d-flex mb-2">
                         <div class="label col-4">School Year</div>
-                        <div class="col-8" style="min-height: 38px; display: flex; align-items: center;">{{ $latestAcadRecord['school_year'] ?? 'N/A' }}</div>
+                        <div class="col-8" style="min-height: 38px; display: flex; align-items: center;">{{ $latestAcadRecord->school_year ?? 'N/A' }}</div>
                     </div>
 
                     <div class="d-flex mb-2">
@@ -232,7 +250,7 @@
 
                     <div class="d-flex mb-2">
                         <div class="label col-4">Section</div>
-                        <div class="col-8 text-capitalize" style="min-height: 38px; display: flex; align-items: center;">{{$student->sections ?? 'N/A'}}</div>
+                        <div class="col-8 text-capitalize" style="min-height: 38px; display: flex; align-items: center;">{{$latestAcadRecord->section_id ?? 'N/A'}}</div>
                     </div>
                 </div>
             </div>
@@ -606,22 +624,20 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($shuffledCourses as $course)
-                @php
-                  $grade = $dummyGrades[array_rand($dummyGrades)];
-                  $semesterGrades[] = floatval($grade);
-                @endphp
-                <tr>
-                  <td>{{ $course->course_code }}</td>
-                  <td>{{ $course->title }}</td>
-                  <td>{{ $grade }}</td>
-                  @php
-                    $status = floatval($grade) <= 3.0 ? 'Passed' : 'Failed';
-                    $statusClass = $status === 'Passed' ? 'text-success' : 'text-danger';
-                  @endphp
-                  <td class="{{ $statusClass }}">{{ $status }}</td>
-                </tr>
-              @endforeach
+          @foreach ($shuffledCourses as $course)
+            @php
+              $grade = $dummyGrades[array_rand($dummyGrades)];
+              $semesterGrades[] = floatval($grade);
+              $status = floatval($grade) <= 3.0 ? 'Passed' : 'Failed';
+              $statusClass = $status === 'Passed' ? 'text-success' : 'text-danger';
+            @endphp
+            <tr>
+              <td>{{ $course->course_code }}</td>
+              <td>{{ $course->title }}</td>
+              <td class="{{ $statusClass }}">{{ $grade }}</td>
+              <td class="{{ $statusClass }}">{{ $status }}</td>
+            </tr>
+          @endforeach
             </tbody>
           </table>
           @php

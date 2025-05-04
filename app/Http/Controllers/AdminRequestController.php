@@ -48,4 +48,27 @@ class AdminRequestController extends Controller
 
         return redirect()->back()->with('success', 'Request declined successfully.');
     }
+
+    public function submitDocumentRequest(Request $request, $student)
+    {
+        $validated = $request->validate([
+            'documentType' => 'required|string|max:255',
+            'documentFormat' => 'required|string|max:255',
+            'copies' => 'required|integer|min:1',
+            'submitDate' => 'required|date',
+        ]);
+
+        try {
+            $docRequest = new DocumentRequest();
+            $docRequest->student_id = $student;
+            $docRequest->document = $validated['documentType'] . ' (' . $validated['documentFormat'] . ') - Copies: ' . $validated['copies'];
+            $docRequest->status = 'pending';
+            $docRequest->date_needed = $validated['submitDate'];
+            $docRequest->save();
+
+            return response()->json(['status' => 'success', 'message' => 'Document request submitted successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Failed to submit document request: ' . $e->getMessage()]);
+        }
+    }
 }

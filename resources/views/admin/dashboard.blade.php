@@ -30,7 +30,7 @@
                   </div>
                 </div><!-- End Sales Card -->
                   
-                  <!-- Modal -->
+                  <!-- Modal Enrolled student -->
                   <div class="modal fade" id="studentsModal" tabindex="-1" aria-labelledby="studentsModalLabel" aria-hidden="true">
                   <div class="modal-dialog modal-xl modal-dialog-scrollable" style="max-width: 90vw;">
                       <div class="modal-content">
@@ -77,7 +77,7 @@
                                 <td>{{ $student->email_address }}</td>
                                 <td>{{ $student->contact_number }}</td>
                                 <td>{{ $student->enrollment_status }}</td>
-                                <td>{{ $student->program ? $student->program->name : '' }}</td>
+                                <td>{{ $student->program->name ?? 'N/A' }}</td>
                               </tr>
                               @endforeach
                             </tbody>
@@ -177,7 +177,7 @@
                         </div>
                       </div>   
                     </div>
-                  </div><!-- End Revenue Card -->
+                  </div>
 
                   <!-- Customers Card -->
                   <div class="col-xxl-4 col-xl-12">
@@ -219,12 +219,37 @@
                             <h6>{{$programs_count}}</h6>
                           </div>
                         </div>
+
+                        <div class="mt-4">
+                          <h5>Students per Program</h5>
+                          <canvas id="studentsProgramPieChart" width="400" height="400"></canvas>
+                        </div>
         
                       </div>
                     </div>
         
                   </div>
-        
+
+
+                  <!-- Grouped Bar Chart for Enrolled, trnasferee, Returnee, and Octoberian -->
+                  <div class="col-xxl-8 col-md-12 mt-4">
+                    <div class="card info-card" style="cursor: default;">
+                      <div class="card-body">
+                        <h5>Yearly Student Status</h5>
+                        <canvas id="statusComparisonBarChart" width="800" height="400"></canvas>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Grouped Bar Chart for Graduated, Failed, Dropped Out -->
+                  <div class="col-xxl-8 col-md-12 mt-4">
+                    <div class="card info-card" style="cursor: default;">
+                      <div class="card-body">
+                        <h5>Annual Student Outcome Trends</h5>
+                        <canvas id="statusComparisonBarChartGFDO" width="800" height="400"></canvas>
+                      </div>
+                    </div>
+                  </div>
                  
         
                       </div>
@@ -236,8 +261,331 @@
               </div>
         
             </div>
+
+            
+
           </section>
 
+          @include('admin.program_modal')
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var salesCard = document.getElementById('salesCard');
+    var studentsModal = new bootstrap.Modal(document.getElementById('studentsModal'));
+    var coursesCard = document.getElementById('coursesCard');
+    var coursesModal = new bootstrap.Modal(document.getElementById('coursesModal'));
+    var departmentCard = document.getElementById('departmentCard');
+    var departmentModal = new bootstrap.Modal(document.getElementById('departmentModal'));
+    var programCard = document.getElementById('programCard');
+    var programModal = new bootstrap.Modal(document.getElementById('programModal'));
+
+    document.getElementById('testModalBtn').addEventListener('click', function() {
+      studentsModal.show();
+    });
+
+    salesCard.addEventListener('click', function () {
+      studentsModal.show();
+    });
+
+    coursesCard.addEventListener('click', function () {
+      coursesModal.show();
+    });
+
+    departmentCard.addEventListener('click', function () {
+      departmentModal.show();
+    });
+
+    programCard.addEventListener('click', function () {
+      programModal.show();
+    });
+
+    // Sorting function for the table
+  let sortDirection = Array(16).fill(true); // true = ascending, false = descending
+
+    function sortTable(columnIndex) {
+      const table = document.getElementById("studentsTable");
+      let switching = true;
+      let shouldSwitch;
+      let i;
+      let rows;
+      let switchcount = 0;
+      let dir = sortDirection[columnIndex] ? "asc" : "desc";
+
+      while (switching) {
+        switching = false;
+        rows = table.rows;
+        for (i = 1; i < (rows.length - 1); i++) {
+          shouldSwitch = false;
+          let x = rows[i].getElementsByTagName("TD")[columnIndex];
+          let y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+
+          let xContent = x.textContent || x.innerText;
+          let yContent = y.textContent || y.innerText;
+
+          if (!isNaN(xContent) && !isNaN(yContent)) {
+            xContent = Number(xContent);
+            yContent = Number(yContent);
+          }
+
+          if (dir === "asc") {
+            if (xContent > yContent) {
+              shouldSwitch = true;
+              break;
+            }
+          } else if (dir === "desc") {
+            if (xContent < yContent) {
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          switchcount++;
+        } else {
+          if (switchcount === 0 && dir === "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+      sortDirection[columnIndex] = !sortDirection[columnIndex];
+    }
+
+    window.sortTable = sortTable; // expose to global scope for inline onclick
+  });
+
+  // Fix for modal backdrop not removed issue
+  document.getElementById('studentsModal').addEventListener('hidden.bs.modal', function () {
+    var modalBackdrops = document.getElementsByClassName('modal-backdrop');
+    while(modalBackdrops.length > 0){
+      modalBackdrops[0].parentNode.removeChild(modalBackdrops[0]);
+    }
+    document.body.classList.remove('modal-open');
+    document.body.style.paddingRight = '';
+  });
+
+  function filterStudents() {
+    const input = document.getElementById('studentSearchInput');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('studentsTable');
+    const trs = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < trs.length; i++) {
+      const tds = trs[i].getElementsByTagName('td');
+      let show = false;
+      for (let j = 0; j < tds.length; j++) {
+        if (tds[j]) {
+          const textValue = tds[j].textContent || tds[j].innerText;
+          if (textValue.toLowerCase().indexOf(filter) > -1) {
+            show = true;
+            break;
+          }
+        }
+      }
+      trs[i].style.display = show ? '' : 'none';
+    }
+  }
+</script>
+
+<script>
+  // Prepare data for pie chart
+  const students = @json($students);
+  const programCounts = {};
+
+  students.forEach(student => {
+    const programName = student.program ? student.program.name : 'Unknown';
+    if (programCounts[programName]) {
+      programCounts[programName]++;
+    } else {
+      programCounts[programName] = 1;
+    }
+  });
+
+  const labels = Object.keys(programCounts);
+  const data = Object.values(programCounts);
+
+  const ctx = document.getElementById('studentsProgramPieChart').getContext('2d');
+
+  // Generate distinct colors for each program dynamically
+  function generateColors(numColors) {
+    const colors = [];
+    const hueStep = Math.floor(360 / numColors);
+    for (let i = 0; i < numColors; i++) {
+      const hue = i * hueStep;
+      colors.push(`hsl(${hue}, 70%, 50%)`);
+    }
+    return colors;
+  }
+
+  const backgroundColors = generateColors(labels.length);
+
+  const studentsProgramPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Students per Program',
+        data: data,
+        backgroundColor: backgroundColors,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+        title: {
+          display: false,
+          text: 'Students per Program'
+        }
+      }
+    }
+  });
+
+
+  // Grouped Bar Chart for Enrolled, Transferee, Returnee, Octoberian students per year
+  const statusPerYearData = @json($statusPerYear);
+  const statusLabels = Object.keys(statusPerYearData['Enrolled']);
+  const enrolledData = Object.values(statusPerYearData['Enrolled']);
+  const transfereeData = Object.values(statusPerYearData['Transferee']);
+  const returneeData = Object.values(statusPerYearData['Returnee']);
+  const octoberianData = Object.values(statusPerYearData['Octoberian']);
+
+  const statusCtx = document.getElementById('statusComparisonBarChart').getContext('2d');
+  const statusComparisonBarChart = new Chart(statusCtx, {
+    type: 'bar',
+    data: {
+      labels: statusLabels,
+      datasets: [
+        {
+          label: 'Enrolled',
+          data: enrolledData,
+          backgroundColor: '#4caf50', // green
+        },
+        {
+          label: 'Transferee',
+          data: transfereeData,
+          backgroundColor: '#2196f3', // blue
+        },
+        {
+          label: 'Returnee',
+          data: returneeData,
+          backgroundColor: '#ff9800', // orange
+        },
+        {
+          label: 'Octoberian',
+          data: octoberianData,
+          backgroundColor: '#9c27b0', // purple
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: false,
+          text: 'Student Status Comparison Per Year'
+        }
+      },
+      scales: {
+        x: {
+          stacked: false,
+        },
+        y: {
+          beginAtZero: true,
+          precision: 0,
+          stacked: false,
+        }
+      }
+    }
+  });
+
+  //  Line Chart for Graduated, Failed, Dropped Out students per year
+  const statusPerYearDataGFDO = @json($statusPerYearGFDO);
+  const statusLabelsGFDO = Object.keys(statusPerYearDataGFDO['Graduated']);
+  const graduatedData = Object.values(statusPerYearDataGFDO['Graduated']);
+  const failedData = Object.values(statusPerYearDataGFDO['Failed']);
+  const droppedOutData = Object.values(statusPerYearDataGFDO['Dropped Out']);
+
+  const statusCtxGFDO = document.getElementById('statusComparisonBarChartGFDO').getContext('2d');
+  const statusComparisonBarChartGFDO = new Chart(statusCtxGFDO, {
+    type: 'line',
+    data: {
+      labels: statusLabelsGFDO,
+      datasets: [
+        {
+          label: 'Graduated',
+          data: graduatedData,
+          borderColor: '#4caf50', // green
+          backgroundColor: 'rgba(76, 175, 80, 0.2)',
+          fill: true,
+          tension: 0.4,
+          pointStyle: 'circle',
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          borderWidth: 3,
+        },
+        {
+          label: 'Failed',
+          data: failedData,
+          borderColor: '#f44336', // red
+          backgroundColor: 'rgba(244, 67, 54, 0.2)',
+          fill: true,
+          tension: 0.4,
+          pointStyle: 'rectRot',
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          borderWidth: 3,
+        },
+        {
+          label: 'Dropped Out',
+          data: droppedOutData,
+          borderColor: '#ff9800', // orange
+          backgroundColor: 'rgba(255, 152, 0, 0.2)',
+          fill: true,
+          tension: 0.4,
+          pointStyle: 'triangle',
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          borderWidth: 3,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: false,
+          text: 'Graduated, Failed, Dropped Out Students Per Year'
+        }
+      },
+      scales: {
+        x: {
+          stacked: false,
+        },
+        y: {
+          beginAtZero: true,
+          precision: 0,
+          stacked: false,
+        }
+      }
+    }
+  });
+  </script>
+  
+  
           @include('admin.program_modal')
 
 <script>
@@ -579,7 +927,61 @@
     }
 
     window.sortTableCourses = sortTableCourses; // expose to global scope for inline onclick
-  });
+
+let sortDirectionDepartments = Array(2).fill(true); // true = ascending, false = descending
+
+function sortTableDepartments(columnIndex) {
+  const table = document.getElementById("departmentTable");
+  let switching = true;
+  let shouldSwitch;
+  let i;
+  let rows;
+  let switchcount = 0;
+  let dir = sortDirectionDepartments[columnIndex] ? "asc" : "desc";
+
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      let x = rows[i].getElementsByTagName("TD")[columnIndex];
+      let y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+
+      let xContent = x.textContent || x.innerText;
+      let yContent = y.textContent || y.innerText;
+
+      if (!isNaN(xContent) && !isNaN(yContent)) {
+        xContent = Number(xContent);
+        yContent = Number(yContent);
+      }
+
+      if (dir === "asc") {
+        if (xContent > yContent) {
+          shouldSwitch = true;
+          break;
+        }
+      } else if (dir === "desc") {
+        if (xContent < yContent) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchcount++;
+    } else {
+      if (switchcount === 0 && dir === "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+  sortDirectionDepartments[columnIndex] = !sortDirectionDepartments[columnIndex];
+}
+
+  window.sortTableDepartments = sortTableDepartments; // expose to global scope for inline onclick
 
   function filterStudents() {
     const input = document.getElementById('studentSearchInput');
@@ -607,9 +1009,10 @@
     const input = document.getElementById('courseSearchInput');
     const filter = input.value.toLowerCase();
     const table = document.getElementById('coursesTable');
-    const trs = table.getElementsByTagName('tr');
+    const tbody = table.getElementsByTagName('tbody')[0];
+    const trs = tbody.getElementsByTagName('tr');
 
-    for (let i = 1; i < trs.length; i++) {
+    for (let i = 0; i < trs.length; i++) {
       const tds = trs[i].getElementsByTagName('td');
       let show = false;
       for (let j = 0; j < tds.length; j++) {
@@ -644,7 +1047,7 @@
 <style>
   #salesCard:hover, #revenueCard:hover, #departmentCard:hover, #programCard:hover, #classesCard:hover {
     background-color: #e0e0e0;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.5);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
   }

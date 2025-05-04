@@ -61,6 +61,57 @@
             </div>
         </div>
 
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Admin Document Requests</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>No</th>
+                            <th>File Name</th>
+                            <th>File Format</th>
+                            <th>Copy/s</th>
+                            <th>Date Needed</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($adminRequests as $index => $request)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            @php
+                                $pattern = '/^(.*?) \((.*?)\) - Copies: (\d+)$/';
+                                preg_match($pattern, $request->document, $matches);
+                                $fileName = $matches[1] ?? $request->document;
+                                $fileFormat = $matches[2] ?? '';
+                                $copies = $matches[3] ?? '';
+                            @endphp
+                            <td>{{ $fileName }}</td>
+                            <td>{{ $fileFormat }}</td>
+                            <td>{{ $copies }}</td>
+                            <td>{{ $request->date_needed }}</td>
+                            <td>
+                                @if(strtolower($request->status) === 'pending')
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                @elseif(strtolower($request->status) === 'submitted')
+                                    <span class="badge bg-success">Submitted</span>
+                                @else
+                                    <span class="badge bg-secondary">{{ ucfirst($request->status) }}</span>
+                                @endif
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="text-center">No admin document requests found.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     <script>
         @if(session('success'))
             Swal.fire({
