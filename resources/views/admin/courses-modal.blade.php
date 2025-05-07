@@ -1,25 +1,29 @@
-<div class="modal fade" id="programModal" tabindex="-1" aria-labelledby="programModalLabel" aria-hidden="true">
+<div class="modal fade" id="coursesModal" tabindex="-1" aria-labelledby="coursesModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable" style="max-width: 90vw;">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="programModalLabel">Programs</h5>
+        <h5 class="modal-title" id="coursesModalLabel">Courses</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <table class="table table-striped datatable" id="programTable">
+        <table class="table table-striped datatable" id="coursesTable">
           <thead>
             <tr>
               <th>No.</th>
-              <th>Program Code</th>
-              <th>Program Name</th>
+              <th>Course Code</th>
+              <th>Title</th>
+              <th>Credits</th>
+              <th>Description</th>
             </tr>
           </thead>
           <tbody>
-            @foreach($programs as $index => $program)
+            @foreach($courses as $index => $course)
             <tr>
-              <td>{{$index + 1}}</td>
-              <td>{{ $program->code }}</td>
-              <td>{{ $program->name }}</td>
+              <td>{{ $index + 1 }}</td>
+              <td>{{ $course->course_code }}</td>
+              <td>{{ $course->title }}</td>
+              <td>{{ $course->credits }}</td>
+              <td>{{ $course->description }}</td>
             </tr>
             @endforeach
           </tbody>
@@ -31,4 +35,3 @@
     </div>
   </div>
 </div>
-</script>
