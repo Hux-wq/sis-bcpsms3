@@ -39,3 +39,10 @@ Route::get('/report', [AdminReportController::class, 'index'])->middleware(['aut
 Route::get('/request', [AdminRequestController::class, 'index'])->middleware(['auth', 'verified'])->name('admin.request');
 
 Route::post('/student/{student}/request-document', [AdminRequestController::class, 'submitDocumentRequest'])->middleware(['auth', 'verified'])->name('admin.request.document.submit');
+
+Route::get('/returnee', [App\Http\Controllers\AdminStudentTableController::class, 'returnee'])->name('admin.returnee');
+Route::get('/transferee', [App\Http\Controllers\AdminStudentTableController::class, 'transferee'])->name('admin.transferee');
+Route::get('/octoberian', [App\Http\Controllers\AdminStudentTableController::class, 'octoberian'])->name('admin.octoberian');
+Route::get('/graduated', [App\Http\Controllers\AdminStudentTableController::class, 'graduated'])->name('admin.graduated');
+Route::get('/droppedout', [App\Http\Controllers\AdminStudentTableController::class, 'droppedout'])->name('admin.droppedout');
+Route::get('/failed', [App\Http\Controllers\AdminStudentTableController::class, 'failed'])->name('admin.failed');

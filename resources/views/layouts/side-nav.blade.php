@@ -69,10 +69,23 @@
             <hr class="sidebar-divider">
             <li class="nav-heading">Students</li>
 
-            <x-nav-link :href="route('admin.student')" :active="request()->routeIs('student')">
-                <i class="fa-solid fa-graduation-cap" style="width: 15px"></i>
-                {{ __('Students') }}
-            </x-nav-link>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#studentsSubmenu" role="button" aria-expanded="false" aria-controls="studentsSubmenu">
+                    <i class="fas fa-book-reader" style="width: 15px"></i>
+                    {{ __('Students') }}   
+                    <i class="fa fa-chevron-down arrow-icon float-end ms-2"></i>
+
+                </a>
+                <ul class="collapse list-unstyled ps-3" id="studentsSubmenu">
+                    <li><a class="nav-link" href="{{ route('admin.student') }}">Enrolled (Regular)</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.returnee') }}">Returnee</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.transferee') }}">Transferee</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.octoberian')}}">Octoberian</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.graduated')}}">Graduated</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.droppedout')}}">Dropped Out</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.failed')}}">Failed</a></li>
+                </ul>
+            </li>
         
         @endif
         
@@ -152,10 +165,32 @@
                 }
             });
         }
+        //for drop down
+        document.addEventListener('DOMContentLoaded', function () {
+  var collapseElement = document.getElementById('studentsSubmenu');
+  var arrowIcon = document.querySelector('.arrow-icon');
+
+  collapseElement.addEventListener('show.bs.collapse', function () {
+    arrowIcon.classList.add('rotate');
+  });
+
+  collapseElement.addEventListener('hide.bs.collapse', function () {
+    arrowIcon.classList.remove('rotate');
+  });
+});
 
     </script>
 
- 
     </ul>
+        <style>
+            
+            .arrow-icon {
+  transition: transform 0.3s ease;
+}
+.arrow-icon.rotate {
+  transform: rotate(180deg);
+}
+
+        </style>
 
   </aside>

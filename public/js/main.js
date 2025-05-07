@@ -275,23 +275,30 @@
    */
   const datatables = select('.datatable', true)
   datatables.forEach(datatable => {
-    new simpleDatatables.DataTable(datatable, {
-      perPageSelect: [5, 10, 15, ["All", -1]],
-      columns: [{
-          select: 2,
-          sortSequence: ["desc", "asc"]
-        },
-        {
-          select: 3,
-          sortSequence: ["desc"]
-        },
-        {
-          select: 4,
-          cellClass: "green",
-          headerClass: "red"
-        }
-      ]
-    });
+    if (datatable.id === 'programTable' || datatable.id === 'departmentTable') {
+      new simpleDatatables.DataTable(datatable, {
+        perPageSelect: [5, 10, 15, ["All", -1]],
+        // No custom columns config for programTable and departmentTable to avoid index errors
+      });
+    } else {
+      new simpleDatatables.DataTable(datatable, {
+        perPageSelect: [5, 10, 15, ["All", -1]],
+        columns: [{
+            select: 2,
+            sortSequence: ["desc", "asc"]
+          },
+          {
+            select: 3,
+            sortSequence: ["desc"]
+          },
+          {
+            select: 4,
+            cellClass: "green",
+            headerClass: "red"
+          }
+        ]
+      });
+    }
   })
 
   /**

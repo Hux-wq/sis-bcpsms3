@@ -34,6 +34,10 @@ class StudentsTableSeeder extends Seeder
                                 'Octoberian', 
                                 'Dropped Out', 
                                 'Failed'];
+        $suffix = [ 'Jr.',
+                    'II',
+                    'III',
+                    ' '];
 
         for ($i = 0; $i < 50; $i++) {
             $birthdate = $faker->dateTimeBetween('-30 years', '-19 years');
@@ -43,7 +47,7 @@ class StudentsTableSeeder extends Seeder
                 'first_name'        => $faker->firstName,
                 'middle_name'      => $faker->firstName,
                 'last_name'        => $faker->lastName,
-                'suffix_name'      => $faker->optional()->suffix,
+                'suffix_name'      => $faker->randomElement($suffix),
                 'age'              => Carbon::parse($birthdate)->age,
                 'gender'           => $faker->randomElement(['Male', 'Female']),
                 'birthdate'        => $birthdate->format('Y-m-d'),

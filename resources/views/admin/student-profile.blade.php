@@ -142,8 +142,7 @@
                                                         text: data.message,
                                                         showConfirmButton: true
                                                     }).then(() => {
-                                                        // Optionally, redirect after success
-                                                       //  window.location.href = "";
+                                                       
                                                     });
                                                 } else {
                                                     Swal.fire({
@@ -217,7 +216,7 @@
                     </div>
                 </div>
 
-                <!-- Right column: move year level, semester, school year, program, email, and section here -->
+                <!-- Right column: for student profile -->
                 <div class="col-12 col-lg-4 d-flex flex-column justify-content-start" style="margin-top: 60px;">
                     @php
                         $latestAcadRecord = collect($acad_records)->sortByDesc('year_level')->first();

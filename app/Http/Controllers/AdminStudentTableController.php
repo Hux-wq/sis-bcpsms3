@@ -11,18 +11,12 @@ class AdminStudentTableController extends Controller
 {
     public function index()
     {
-
-        $students = Student::where('enrollment_status', 'enrolled')->get();
-        
-
+        $students = Student::where('enrollment_status', 'Enrolled')->get();
         return view('admin.student', compact('students'));
     }
 
-
-
     public function studentProfile($id)
     {
-
         $student = Student::findOrFail($id);
         $acad_records = AcademicRecord::where('student_id', $id)->get();
 
@@ -63,6 +57,40 @@ class AdminStudentTableController extends Controller
         }
     }
 
+    public function returnee()
+    {
+        $students = Student::where('enrollment_status', 'Returnee')->get();
+        return view('admin.returnee', compact('students'));
+    }
 
+    public function transferee()
+    {
+        $students = Student::where('enrollment_status', 'Transferee')->get();
+        return view('admin.transferee', compact('students'));
+    }
 
+    public function octoberian()
+    {
+        $students = Student::where('enrollment_status', 'Octoberian')->get();
+        return view('admin.octoberian', compact('students'));
+    }
+
+    public function graduated()
+    {
+        $students = Student::where('enrollment_status', 'Graduated')->get();
+        return view('admin.graduated', compact('students'));
+    }
+
+    public function droppedOut()
+    {
+        $students = Student::where('enrollment_status', 'Dropped Out')->get();
+        return view('admin.dropped-out', compact('students'));
+    }
+
+    public function failed()
+    {
+        $students = Student::where('enrollment_status', 'Failed')->get();
+        return view('admin.failed', compact('students'));
+    }
 }
+

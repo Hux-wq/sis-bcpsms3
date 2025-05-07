@@ -132,9 +132,14 @@ class AdminDashboardController extends Controller
             $dummyStatusDataGFDO[$status]['2025'] = $statusCounts2025GFDO[$status] ?? 0;
         }
 
+        $studentsGFDO = Student::with(['program', 'academicRecords.section'])
+            ->whereIn('enrollment_status', ['Graduated', 'Failed', 'Dropped Out'])
+            ->get(['id', 'student_number', 'program_id', 'first_name', 'middle_name', 'last_name', 'suffix_name', 'age', 'gender', 'birthdate', 'religion', 'place_of_birth', 'current_address', 'email_address', 'contact_number', 'enrollment_status', 'created_at', 'updated_at']);
+
         return view('admin.dashboard',[
             'student_enrolled_count' => $studentsCount,
             'students' => $students,
+            'studentsGFDO' => $studentsGFDO,
             'courses_count' => $coursesCount,
             'courses' => $courses,
             'programs_count' => $programsCount,

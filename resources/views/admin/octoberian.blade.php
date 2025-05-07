@@ -1,9 +1,9 @@
 <x-app-layout>
 
-    <x-page-title header="Enrolled Student" :links="['student' => '/student']"/>
+    <x-page-title header="Octoberian Students" :links="['octoberian' => '/octoberian']"/>
 
     <div class="card p-3">
-        <table id="studenttable" class="table table-striped datatable">
+        <table id="octoberiantable" class="table table-striped datatable">
             <thead>
                 <tr>
 
@@ -17,7 +17,7 @@
             </thead>    
             <tbody>
                 @foreach ( $students as $index => $student)
-                @if ($student->enrollment_status === 'Enrolled')
+                @if ($student->enrollment_status === 'Octoberian')
                 <tr>
                     <td>{{$index + 1}}</td>
                     <td class="text-capitalize">
