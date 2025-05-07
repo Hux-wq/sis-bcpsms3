@@ -1,5 +1,4 @@
-
-  <x-app-layout>
+<x-app-layout>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -24,25 +23,7 @@
     @endif
 
     <div class="card p-3">
-    @php
-function GetUserName($id) {
-    $user = \App\Models\Student::find($id);
 
-    if (!$user) {
-        return 'Unknown User';
-    }
-
-    return trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
-}
-@endphp
-
-@php
-    function GetStudentNumber($id) {
-        $user = \App\Models\Student::find($id);
-
-        return $user->student_number ?? 'N/A';
-}
-@endphp
         <table id="datatable" class="datatable">
             <thead>
                 <tr>
@@ -61,8 +42,8 @@ function GetUserName($id) {
             @foreach ($files as $file)
             <tr>
                 <td>{{$file->id}}</td>
-                <td>{{ GetStudentNumber($file->student_id) }}</td>
-                <td>{{ GetUserName($file->student_id) }}</td>
+                <td>{{ \App\Helpers\UserHelper::GetStudentNumber($file->student_id) }}</td>
+                <td>{{ \App\Helpers\UserHelper::GetUserName($file->student_id) }}</td>
                 <td>{{$file->file_name}}</td>
                 <td>{{$file->readable_type }}</td>
                 <td>{{$file->file_size}}Kb</td>
