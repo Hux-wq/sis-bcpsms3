@@ -1,11 +1,13 @@
 <x-app-layout>
 
-    <x-page-title header="Student" :links="['student' => '/student']"/>
+    <x-page-title header="Enrolled Student" :links="['student' => '/student']"/>
 
     <div class="card p-3">
-        <table id="studenttable" class="datatable">
+        <table id="studenttable" class="table table-striped datatable">
             <thead>
                 <tr>
+
+                    <th>No.</th>
                     <th>Name</th>
                     <th>Student No</th>
                     <th>Age</th>
@@ -14,8 +16,10 @@
                 </tr>
             </thead>    
             <tbody>
-                @foreach ( $students as $student)
+                @foreach ( $students as $index => $student)
+                @if ($student->enrollment_status === 'Enrolled')
                 <tr>
+                    <td>{{$index + 1}}</td>
                     <td class="text-capitalize">
                         {{ $student->last_name ?? 'N/A'}},
                         {{ $student->first_name ?? 'N/A'}}
@@ -30,10 +34,10 @@
                         </a>
                     </td>
                 </tr>
+                @endif
                 @endforeach
             </tbody>
         </table>
     </div>
 
-
-  </x-app-layout>
+</x-app-layout>
