@@ -3,25 +3,6 @@
     <x-page-title header="Request" :links="['Request' => '/Request']"/>
 
     <div class="card p-3">
-    @php
-function GetUserName($id) {
-    $user = \App\Models\Student::find($id);
-
-    if (!$user) {
-        return 'Unknown User';
-    }
-
-    return trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
-}
-@endphp
-
-@php
-    function GetStudentNumber($id) {
-        $user = \App\Models\Student::find($id);
-
-        return $user->student_number ?? 'N/A';
-}
-@endphp
 
     <!-- Pending Request -->
     <h3 class="text-white p-2" style="background-color: #334155;">Pending Requests</h3>
@@ -42,8 +23,8 @@ function GetUserName($id) {
             @foreach ($pendingReqs as $req)
             <tr>
                 <td>{{ $req->id }}</td>
-                <td>{{ GetStudentNumber($req->student_id) }}</td>
-                <td>{{ GetUserName($req->student_id) }}</td>
+                <td>{{ \App\Helpers\UserHelper::GetStudentNumber($req->student_id) }}</td>
+                <td>{{ \App\Helpers\UserHelper::GetUserName($req->student_id) }}</td>
                 <td class="text-capitalize">{{ $req->document }}</td>
                 <td>{{ $req->status }}</td>
                 <td>{{ $req->created_at ? $req->created_at->format('Y-m-d') : '-' }}</td>
@@ -81,8 +62,8 @@ function GetUserName($id) {
             @foreach ($acceptedReqs as $req)
             <tr>
                 <td>{{ $req->id }}</td>
-                <td>{{ GetStudentNumber($req->student_id) }}</td>
-                <td>{{ GetUserName($req->student_id) }}</td>
+                <td>{{ \App\Helpers\UserHelper::GetStudentNumber($req->student_id) }}</td>
+                <td>{{ \App\Helpers\UserHelper::GetUserName($req->student_id) }}</td>
                 <td class="text-capitalize">{{ $req->document }}</td>
                 <td>{{ $req->status }}</td>
                 <td>{{ $req->created_at ? $req->created_at->format('Y-m-d') : '-' }}</td>
@@ -110,8 +91,8 @@ function GetUserName($id) {
             @foreach ($declinedReqs as $req)
             <tr>
                 <td>{{ $req->id }}</td>
-                <td>{{ GetStudentNumber($req->student_id) }}</td>
-                <td>{{ GetUserName($req->student_id) }}</td>
+                <td>{{ \App\Helpers\UserHelper::GetStudentNumber($req->student_id) }}</td>
+                <td>{{ \App\Helpers\UserHelper::GetUserName($req->student_id) }}</td>
                 <td class="text-capitalize">{{ $req->document }}</td>
                 <td>{{ $req->status }}</td>
                 <td>{{ $req->created_at ? $req->created_at->format('Y-m-d') : '-' }}</td>
@@ -120,7 +101,6 @@ function GetUserName($id) {
             @endforeach
         </tbody>
     </table>
-    {{ $declinedReqs->links('pagination::bootstrap-5') }}
 </div>
     @if(session('success'))
     <script>
