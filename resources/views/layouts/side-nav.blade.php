@@ -11,7 +11,7 @@
 
       <div style="display: flex; flex-direction: column; align-items: center; padding: 16px;">
         <div style="display: flex; align-items: center; justify-content: center; width: 96px; height: 96px; border-radius: 50%; background-color: #334155; color: #e2e8f0; font-size: 48px; font-weight: bold; text-transform: uppercase; line-height: 1;">
-            LC
+            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
         </div>
         
 
