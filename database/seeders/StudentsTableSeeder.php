@@ -39,7 +39,7 @@ class StudentsTableSeeder extends Seeder
                     'III',
                     ' '];
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $birthdate = $faker->dateTimeBetween('-30 years', '-19 years');
             $createdAt = $faker->dateTimeBetween('2025-01-01', now());
             DB::table('students')->insert([
@@ -56,7 +56,7 @@ class StudentsTableSeeder extends Seeder
                 'current_address'  => $faker->address,
                 'email_address'    => $faker->unique()->safeEmail,
                 'contact_number'   => '09' . $faker->numberBetween(100000000, 999999999),
-                'program_id'       => $faker->numberBetween(1, 55),
+                'program_id'       => $faker->numberBetween(1, 50),
                 'enrollment_status'=> $faker->randomElement($enrollmentStatuses),
                 'created_at'       => $createdAt,
                 'updated_at'       => now(),
