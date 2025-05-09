@@ -373,7 +373,7 @@
     background-color: #d0e4f7 !important; /* Slightly darker tone than AliceBlue */
   }
   canvas {
-    background-color: #f8f9fa !important; /* Slightly darker off-white background for charts */
+    background-color: transparent !important; /* Make chart backgrounds transparent */
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
