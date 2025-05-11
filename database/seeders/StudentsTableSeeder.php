@@ -39,7 +39,7 @@ class StudentsTableSeeder extends Seeder
                     'III',
                     ' '];     
 
-        for ($i = 0; $i == 150; $i++) {
+        for ($i = 0; $i <= 150; $i++) {
             $birthdate = $faker->dateTimeBetween('-30 years', '-19 years');
             $createdAt = $faker->dateTimeBetween('2025-01-01', now());
             DB::table('students')->insert([
