@@ -14,7 +14,7 @@ class StudentAcademicRecords extends Seeder
      */
     public function run(): void
     {
-        $studentIds = range(1, 126);
+        $studentIds = range(1, 150);
         $maxRows = 1008; // Set your desired limit here
         $records = [];
 
