@@ -115,7 +115,7 @@
                                 </div>
 
                                 <script>          
-                                document.getElementById('createAccountButton').addEventListener('click', function(event) {
+                                  document.getElementById('createAccountButton').addEventListener('click', function(event) {
                                      event.preventDefault(); // Prevent default form submission
                              
                                      Swal.fire({
@@ -169,7 +169,7 @@
                                      });
                                  });
                                
-                              </script>
+                                </script>
                             </div>
                                     
                         </div>
@@ -180,41 +180,41 @@
 
                 <!-- Left column: other profile details except the specified fields -->
                 <div class="col-12 col-lg-4">
-                    <div class="d-flex pt-4 mb-6">
+                    <div class="d-flex pt-4 mb-1">
                         <h5 class="me-1 fw-bolder">Profile Details</h5>
                         <h5><a class="pb-2 link underline text-primary" href="http://127.0.0.1:8000/Students/Profile/View/{students.id}/EditProfile">Edit <i class="fa-solid fa-pen-to-square"></i></a></h5>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label ">Last Name</div>
+                    <div class="d-flex mb-2">
+                        <div class="col-lg-3 col-md-4 label text-nowrap">Last Name</div>
                         <div class="col-lg-9 col-md-8 text-capitalize">{{$student->last_name}}</div>
                     </div>
     
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label ">First Name</div>
+                    <div class="d-flex mb-2">
+                        <div class="col-lg-3 col-md-4 label text-nowrap">First Name</div>
                         <div class="col-lg-9 col-md-8 text-capitalize">{{$student->first_name}}</div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label ">Middle Name</div>
+                    <div class="d-flex mb-2">
+                        <div class="col-lg-3 col-md-4 label text-nowrap">Middle</div>
                         <div class="col-lg-9 col-md-8 text-capitalize">{{$student->middle_name}}</div>
                     </div>
     
-                    <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Age</div>
-                    <div class="col-lg-9 col-md-8">{{$student->age}}</div>
+                    <div class="d-flex mb-2">
+                        <div class="col-lg-3 col-md-4 label text-nowrap">Age</div>
+                        <div class="col-lg-9 col-md-8">{{$student->age}}</div>
                     </div>
     
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label">Gender</div>
+                    <div class="d-flex mb-2">
+                        <div class="col-lg-3 col-md-4 label text-nowrap">Gender</div>
                         <div class="col-lg-9 col-md-8 text-capitalize">{{$student->gender}}</div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label">Date of Birth</div>
+                    <div class="d-flex mb-2">
+                        <div class="col-lg-3 col-md-4 label text-nowrap">Birthdate</div>
                         <div class="col-lg-9 col-md-8">{{$student->birthdate}}</div>
                     </div>
     
-                    <div class="row">
-                        <div class="col-lg-3 col-md-4 label">Birth of Place</div>
+                    <div class="d-flex mb-2">
+                        <div class="col-lg-3 col-md-4 label text-nowrap">BirthPlace</div>
                         <div class="col-lg-9 col-md-8">{{$student->place_of_birth}}</div>
                     </div>
                 </div>
@@ -223,36 +223,37 @@
                 <div class="col-12 col-lg-4 d-flex flex-column justify-content-start" style="margin-top: 60px;">
                     @php
                         $latestAcadRecord = collect($acad_records)->sortByDesc('year_level')->first();
+                        
                     @endphp
 
                     <div class="d-flex mb-2">
-                        <div class="label col-4">Year Level</div>
-                        <div class="col-8" style="min-height: 38px; display: flex; align-items: center;">{{ $latestAcadRecord->year_level ?? 'N/A' }}</div>
+                        <div class="label col-4 text-nowrap">Year Level</div>
+                        <div class="col-8" >{{ $latestAcadRecord->year_level ?? 'N/A' }}</div>
+                    </div>
+
+                    <div class="d-flex mb-2" >
+                        <div class="label col-4 text-nowrap">Semester</div>
+                        <div class="col-8" >{{ $latestAcadRecord->semester ?? 'N/A' }}</div>
                     </div>
 
                     <div class="d-flex mb-2">
-                        <div class="label col-4">Semester</div>
-                        <div class="col-8" style="min-height: 38px; display: flex; align-items: center;">{{ $latestAcadRecord->semester ?? 'N/A' }}</div>
+                        <div class="label col-4 text-nowrap">School Year</div>
+                        <div class="col-8" >{{ $latestAcadRecord->school_year ?? 'N/A' }}</div>
                     </div>
 
                     <div class="d-flex mb-2">
-                        <div class="label col-4">School Year</div>
-                        <div class="col-8" style="min-height: 38px; display: flex; align-items: center;">{{ $latestAcadRecord->school_year ?? 'N/A' }}</div>
+                        <div class="label col-4 text-nowrap">Program</div>
+                        <div class="col-8 text-capitalize" >{{$student->program->name ?? 'N/A'}}</div>
                     </div>
 
                     <div class="d-flex mb-2">
-                        <div class="label col-4">Program</div>
-                        <div class="col-8 text-capitalize" style="min-height: 38px; display: flex; align-items: center;">{{$student->program->name ?? 'N/A'}}</div>
+                        <div class="label col-4 text-nowrap">Email</div>
+                        <div class="col-8" >{{$student->email_address ?? 'N/A'}}</div>
                     </div>
 
                     <div class="d-flex mb-2">
-                        <div class="label col-4">Email</div>
-                        <div class="col-8" style="min-height: 38px; display: flex; align-items: center;">{{$student->email_address ?? 'N/A'}}</div>
-                    </div>
-
-                    <div class="d-flex mb-2">
-                        <div class="label col-4">Section</div>
-                        <div class="col-8 text-capitalize" style="min-height: 38px; display: flex; align-items: center;">{{$latestAcadRecord->section_id ?? 'N/A'}}</div>
+                        <div class="label col-4 text-nowrap">Section</div>
+                        <div class="col-8 text-capitalize" >{{ $latestAcadRecord->section->section ?? 'N/A' }}</div>
                     </div>
                 </div>
             </div>
@@ -264,7 +265,7 @@
                 <div class="col-6">
                     <div class="d-flex">
                         <div class="label col-6">Remaining Balance</div>
-                        <div class="col-6" style="min-height: 38px; display: flex; align-items: center;">
+                        <div class="col-6" ">
                             ₱{{ number_format(15000.00, 2) }}
                         </div>
                     </div>
@@ -281,7 +282,7 @@
                 <div class="col-6">
                     <div class="d-flex">
                         <div class="label col-6">Paid Balance</div>
-                        <div class="col-6" style="min-height: 38px; display: flex; align-items: center;">
+                        <div class="col-6" ">
                             ₱{{ number_format(35000.00, 2) }}
                         </div>
                     </div>
