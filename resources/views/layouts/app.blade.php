@@ -43,12 +43,18 @@
         <!-- Include SweetAlert2 CSS and JS in your layout file -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Select2 CDN -->
+       <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>  
+
         <link rel="stylesheet" href="/resources/css/app.css">
         <link rel="stylesheet" href="/resources/css/custom-hover.css">
         <!-- Scripts -->
         <link rel="stylesheet" href="/resources/js/app.js">
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+       
     </head>
 <body class="font-sans antialiased">
 
@@ -93,6 +99,16 @@
         <script src="/js/main.js"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+         <script>
+            // Activate Select2 on the dropdown
+            $(document).ready(function() {
+              $('.dropdown-input-tab').select2({
+                tags: true,
+               
+              });
+            });
+        </script>
 
     </body>
 </html>

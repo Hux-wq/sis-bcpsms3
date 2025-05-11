@@ -18,8 +18,9 @@ class AdminStudentTableController extends Controller
     public function studentProfile($id)
     {
         $student = Student::findOrFail($id);
+        
         $acad_records = AcademicRecord::where('student_id', $id)->get();
-
+       
         // Load a limited number of courses (3 to 8) for the student randomly
         $courses = \App\Models\Course::inRandomOrder()->limit(rand(3, 8))->get();
     
