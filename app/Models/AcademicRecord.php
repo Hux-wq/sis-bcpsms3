@@ -22,4 +22,9 @@ class AcademicRecord extends Model
     {
         return $this->belongsTo(Section::class);
     }
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
 }
