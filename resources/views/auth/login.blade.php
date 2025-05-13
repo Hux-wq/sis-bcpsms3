@@ -5,7 +5,7 @@
             <div class=" text-center pt-5">
         
                 <x-application-logo class="w-25"/>
-            
+           
             </div>
             <form method="POST" class="mx-auto card p-3 mt-4" action="{{ route('login') }}" style="max-width: 400px;">
                 @csrf
