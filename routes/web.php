@@ -53,3 +53,6 @@ require __DIR__.'/api.php';
 require __DIR__.'/export.php';
 
 Route::delete('/files/{id}', [UploadDocumentController::class, 'destroy'])->name('files.destroy');
+
+require __DIR__.'/teacher.php';
+
