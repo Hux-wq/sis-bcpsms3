@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Create Teacher Account</button>
+                            <button type="submit" class="btn btn-primary">Create  Account</button>
                         </form>
                     </div>
                 </div>
@@ -46,21 +46,21 @@
                 <!-- Button to create all student accounts by category -->
                 <div class="card">
                     <div class="card-header">
-                        <h4>Create All Student Accounts</h4>
+                        <h4>Create Student Accounts</h4>
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ route('admin.student.accounts.create.all') }}">
                             @csrf
-                            <div class="mb-3">
+                            <div class="mb-3, w-25">
                                 <label for="student_category" class="form-label">Select Category</label>
-                                <select class="form-select" id="student_category" name="student_category" required>
+                                <select class="form-select" id="student_category" name="student_category" required> 
                                     <option value="Enrolled">Enrolled</option>
                                     <option value="Transferee">Transferee</option>
                                     <option value="Returnee">Returnee</option>
                                     <option value="Octoberian">Octoberian</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-success">Create Accounts for Selected Category</button>
+                            <button type="submit" class="btn btn-success">Create Accounts</button>
                         </form>
                     </div>
                 </div>
