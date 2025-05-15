@@ -126,6 +126,12 @@
     <hr class="sidebar-divider">
     <li class="nav-heading">settings</li>
 
+    <li class="nav-heading">Account Creation</li>
+    <x-nav-link :href="route('admin.account.creation')" :active="request()->routeIs('account.creation')">
+        <i class="fa-solid fa-user-plus" style="width: 15px;"></i>
+        {{ __('Account Creation') }}
+    </x-nav-link>
+
     <x-responsive-nav-link>
         <div class="nav-link">
             <i class="fa-solid fa-arrow-right-from-bracket text-light" style="width: 15px;"></i>

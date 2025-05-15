@@ -14,16 +14,12 @@ class StudentAcademicRecords extends Seeder
      */
     public function run(): void
     {
-        $studentIds = range(1, 150);
-        $maxRows = 1200; // Set your desired limit here
+        $studentIds = range(1, 201);
         $records = [];
 
         foreach ($studentIds as $studentId) {
             for ($yearLevel = 1; $yearLevel <= 4; $yearLevel++) {
                 for ($semester = 1; $semester <= 2; $semester++) {
-                   if (count($records) == $maxRows) {
-                        break 3; // Exit all loops if limit reached
-                    }                   
                     $startYear = rand(2018, 2024);                                                                                      
                     $schoolYear = $startYear . '-' . ($startYear + 1);
                     $records[] = [

@@ -64,6 +64,11 @@ class User extends Authenticatable
         return $this->acc_type == 'student';
     }
 
+    public function isTeacher()
+    {
+        return $this->acc_type == 'teacher';
+    }
+
 
 
 
