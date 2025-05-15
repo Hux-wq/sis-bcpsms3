@@ -39,7 +39,7 @@
         
         <!-- Template Main CSS File -->
         <link href="/css/style.css" rel="stylesheet">
-
+        
         <!-- Include SweetAlert2 CSS and JS in your layout file -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 

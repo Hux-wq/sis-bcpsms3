@@ -3,7 +3,7 @@
     <x-page-title header="Graduated Students" :links="['graduated' => '/graduated']"/>
 
     <div class="card p-3">
-        <table id="graduatedtable" class="table table-striped datatable">
+        <table id="graduatedtable" class="table table-hover datatable">
             <thead>
                 <tr>
 
