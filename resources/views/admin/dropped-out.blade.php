@@ -3,7 +3,7 @@
     <x-page-title header="Dropped Out Students" :links="['dropped-out' => '/dropped-out']"/>
 
     <div class="card p-3">
-        <table id="droppedouttable" class="table table-striped datatable">
+        <table id="droppedouttable" class="table table-hover datatable">
             <thead>
                 <tr>
 

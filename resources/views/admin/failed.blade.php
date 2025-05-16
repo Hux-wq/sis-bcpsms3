@@ -3,7 +3,7 @@
     <x-page-title header="Failed Students" :links="['failed' => '/failed']"/>
 
     <div class="card p-3">
-        <table id="failedtable" class="table table-striped datatable">
+        <table id="failedtable" class="table table-hover datatable">
             <thead>
                 <tr>
 

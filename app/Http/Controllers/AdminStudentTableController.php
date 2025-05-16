@@ -9,6 +9,7 @@ use App\Models\AcademicRecord;
 
 class AdminStudentTableController extends Controller
 {
+    
     public function index()
     {
         $students = Student::where('enrollment_status', 'Enrolled')->get();
@@ -68,6 +69,8 @@ class AdminStudentTableController extends Controller
     {
         $students = Student::where('enrollment_status', 'Transferee')->get();
         return view('admin.transferee', compact('students'));
+
+        
     }
 
     public function octoberian()
@@ -93,5 +96,5 @@ class AdminStudentTableController extends Controller
         $students = Student::where('enrollment_status', 'Failed')->get();
         return view('admin.failed', compact('students'));
     }
-}
 
+}

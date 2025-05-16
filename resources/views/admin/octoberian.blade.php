@@ -3,7 +3,7 @@
     <x-page-title header="Octoberian Students" :links="['octoberian' => '/octoberian']"/>
 
     <div class="card p-3">
-        <table id="octoberiantable" class="table table-striped datatable">
+        <table id="octoberiantable" class="table table-hover datatable">
             <thead>
                 <tr>
 
