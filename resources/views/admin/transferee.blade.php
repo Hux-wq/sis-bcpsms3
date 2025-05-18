@@ -3,7 +3,7 @@
     <x-page-title header="Transferee Students" :links="['transferee' => '/transferee']"/>
 
     <div class="card p-3">
-        <table id="transfereetable" class="table table-striped datatable">
+        <table id="transfereetable" class="table table-hover datatable">
             <thead>
                 <tr>
 

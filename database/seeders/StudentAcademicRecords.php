@@ -20,7 +20,7 @@ class StudentAcademicRecords extends Seeder
         foreach ($studentIds as $studentId) {
             for ($yearLevel = 1; $yearLevel <= 4; $yearLevel++) {
                 for ($semester = 1; $semester <= 2; $semester++) {
-                    $startYear = rand(2018, 2024);                                                                                      
+                    $startYear = rand(2018, 2025);                                                                                      
                     $schoolYear = $startYear . '-' . ($startYear + 1);
                     $records[] = [
                         'student_id' => $studentId,

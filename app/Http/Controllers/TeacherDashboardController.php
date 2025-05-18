@@ -14,10 +14,10 @@ class TeacherDashboardController extends Controller
         $user = Auth::user();
 
         // Assuming the teacher is linked to sections they teach
-        $sections = Section::where('teacher_id', $user->id)->get();
+        $sections = Section::where('adviser', $user->id)->get();
 
         // Get students in these sections
-        $students = Student::whereIn('section_id', $sections->pluck('id'))->get();
+        $students = Student::whereIn('program_id', $sections->pluck('id'))->get();
 
         // Count of sections and students
         $sectionsCount = $sections->count();
