@@ -161,7 +161,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
-                    text: "{{ session('success') }}",
+                    text: decodeURIComponent("{{ rawurlencode(session('success')) }}"),
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#0d6efd'
                 });

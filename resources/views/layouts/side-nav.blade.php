@@ -83,10 +83,15 @@
                     <li><a class="nav-link" href="{{ route('admin.octoberian')}}">Octoberian</a></li>
                     <li><a class="nav-link" href="{{ route('admin.graduated')}}">Graduated</a></li>
                     <li><a class="nav-link" href="{{ route('admin.droppedout')}}">Dropped Out</a></li>
-                    <li><a class="nav-link" href="{{ route('admin.failed')}}">Failed</a></li>
+            <li><a class="nav-link" href="{{ route('admin.failed')}}">Failed</a></li>
                 </ul>
             </li>
-        
+            <li class="nav-item">
+<a class="nav-link" href="{{ route('admin.teachers.index') }}">
+                    <i class="fas fa-chalkboard-teacher" style="width: 15px"></i>
+                    {{ __('Teachers') }}
+                </a>
+            </li>
         @endif
         
     @endif
@@ -126,11 +131,13 @@
     <hr class="sidebar-divider">
     <li class="nav-heading">settings</li>
 
+    @if(Auth::user()->isAdmin())
     <li class="nav-heading">Account Creation</li>
     <x-nav-link :href="route('admin.account.creation')" :active="request()->routeIs('account.creation')">
         <i class="fa-solid fa-user-plus" style="width: 15px;"></i>
         {{ __('Account Creation') }}
     </x-nav-link>
+    @endif
 
     <x-responsive-nav-link>
         <div class="nav-link">

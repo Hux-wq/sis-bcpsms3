@@ -50,7 +50,7 @@
                                 @if($students->isEmpty())
                                     <p>No students found in your sections.</p>
                                 @else
-                                    <table class="table table-striped">
+                                    <table class="table table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Student Number</th>
