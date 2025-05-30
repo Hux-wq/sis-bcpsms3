@@ -14,6 +14,10 @@ class AdminRequestController extends Controller
         {
             return redirect('/s/request');
         }
+        if(Auth::User()->isTeacher())
+        {
+            return redirect('/teacher/dashboard');
+        }
         $pendingReqs = DocumentRequest::where('status', 'pending')->paginate(5, ['*'], 'pending_page');
         $acceptedReqs = DocumentRequest::where('status', 'accepted')->paginate(5, ['*'], 'accepted_page');
         $declinedReqs = DocumentRequest::where('status', 'declined')->paginate(5, ['*'], 'declined_page');

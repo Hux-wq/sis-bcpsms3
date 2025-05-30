@@ -13,21 +13,67 @@ class TeacherDashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Assuming the teacher is linked to sections they teach
-        $sections = Section::where('adviser', $user->id)->get();
-
-        // Get students in these sections
-        $students = Student::whereIn('program_id', $sections->pluck('id'))->get();
+        // Assuming the teacher is linked to sections they teach with students eager loaded
+        $sections = Section::where('adviser', $user->id)
+            ->with(['students' => function ($query) {
+                $query->orderBy('last_name', 'asc')->orderBy('first_name', 'asc');
+            }])
+            ->get();
 
         // Count of sections and students
         $sectionsCount = $sections->count();
-        $studentsCount = $students->count();
+        $studentsCount = $sections->sum(function ($section) {
+            return $section->students->count();
+        });
 
         return view('Teacher.dashboard', [
             'sections' => $sections,
-            'students' => $students,
             'sectionsCount' => $sectionsCount,
             'studentsCount' => $studentsCount,
         ]);
+    }
+
+    public function inputGrades()
+    {
+        $user = Auth::user();
+
+        // Get sections where the teacher is adviser with students eager loaded
+        $sections = Section::where('adviser', $user->id)
+            ->with(['students' => function ($query) {
+                $query->orderBy('last_name', 'asc')->orderBy('first_name', 'asc');
+            }])
+            ->get();
+
+        return view('teacher.input-grades', [
+            'sections' => $sections,
+        ]);
+    }
+
+    public function storeGrades(Request $request)
+    {
+        // TODO: Implement storing grades logic
+        return redirect()->route('teacher.grades.input')->with('success', 'Grade submitted successfully.');
+    }
+
+    public function inputAttendance()
+    {
+        $user = Auth::user();
+
+        // Get sections where the teacher is adviser with students eager loaded
+        $sections = Section::where('adviser', $user->id)
+            ->with(['students' => function ($query) {
+                $query->orderBy('last_name', 'asc')->orderBy('first_name', 'asc');
+            }])
+            ->get();
+
+        return view('teacher.input-attendance', [
+            'sections' => $sections,
+        ]);
+    }
+
+    public function storeAttendance(Request $request)
+    {
+        // TODO: Implement storing attendance logic
+        return redirect()->route('teacher.attendance.input')->with('success', 'Attendance submitted successfully.');
     }
 }
