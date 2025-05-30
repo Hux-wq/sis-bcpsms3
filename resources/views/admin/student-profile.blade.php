@@ -308,7 +308,7 @@
 
             <div class="d-flex align-items-center p-1" style="cursor: pointer;">
               <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                <i class="bi bi-currency-dollar"></i>
+                <i class="fas fa-check me-1"></i>
               </div>
               <div>
                 <h5>95%</h5>
@@ -379,7 +379,7 @@
 
             <div class="d-flex align-items-center p-1" style="cursor: pointer;">
               <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                <i class="bi bi-currency-dollar"></i>
+                <i class="fas fa-times me-1"></i>
               </div>
               <div>
                 <h5>3%</h5>
@@ -453,7 +453,7 @@
 
             <div class="d-flex align-items-center p-1" style="cursor: pointer;">
               <div class="card-icon rounded-circle d-flex align-items-center justify-content-center pe-2">
-                <i class="fa-solid fa-user"></i>
+                <i class="fas fa-clock me-1"></i>
               </div>
               <div>
                 <h5>2%</h5>
@@ -541,7 +541,7 @@
 
             <div class="d-flex align-items-center p-1" style="cursor: pointer;">
               <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                <i class="bi bi-currency-dollar"></i>
+                <i class='bx  bx-calendar-week'></i> 
               </div>
               <div>
                 @php

@@ -14,6 +14,10 @@ class AdminDocumentController extends Controller
         {
             return redirect('/s/document');
         }
+        if(Auth::User()->isTeacher())
+        {
+            return redirect('/teacher/dashboard');
+        }
         $files = UploadFiles::all();
 
         return view('admin.document',[
