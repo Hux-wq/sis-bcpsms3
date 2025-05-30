@@ -57,7 +57,7 @@
                     <div class="card-header bg-gradient text-white py-3" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
                         <div class="d-flex align-items-center">
                             <i class="fas fa-download me-2 fs-5"></i>
-                            <h4 class="mb-0 fw-bold">Quick Export</h4>
+                            <h4 class="mb-0 fw-bold text-dark">Quick Export</h4>
                         </div>
                     </div>
                     <div class="card-body p-4">
@@ -106,7 +106,7 @@
                     <div class="card-header bg-gradient text-white py-3" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
                         <div class="d-flex align-items-center">
                             <i class="fas fa-filter me-2 fs-5"></i>
-                            <h4 class="mb-0 fw-bold">Filtered Export</h4>
+                            <h4 class="mb-0 fw-bold text-dark">Filtered Export</h4>
                         </div>
                     </div>
                     <div class="card-body p-4">
@@ -189,7 +189,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-history me-2 fs-5"></i>
-                        <h4 class="mb-0 fw-bold">Export Guidelines</h4>
+                        <h4 class="mb-0 fw-bold text-dark">Export Guidelines</h4>
                     </div>
                 </div>
             </div>
