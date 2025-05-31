@@ -9,13 +9,21 @@ use App\Models\Student;
 
 class TeacherDashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
+        $search = $request->input('search');
 
         // Assuming the teacher is linked to sections they teach with students eager loaded
         $sections = Section::where('adviser', $user->id)
-            ->with(['students' => function ($query) {
+            ->with(['students' => function ($query) use ($search) {
+                if ($search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('first_name', 'like', '%' . $search . '%')
+                          ->orWhere('last_name', 'like', '%' . $search . '%')
+                          ->orWhere('student_number', 'like', '%' . $search . '%');
+                    });
+                }
                 $query->orderBy('last_name', 'asc')->orderBy('first_name', 'asc');
             }])
             ->get();
@@ -30,7 +38,46 @@ class TeacherDashboardController extends Controller
             'sections' => $sections,
             'sectionsCount' => $sectionsCount,
             'studentsCount' => $studentsCount,
+            'search' => $search,
         ]);
+    }
+
+    public function searchStudents(Request $request)
+    {
+        $user = Auth::user();
+        $search = $request->input('search');
+
+        $sections = Section::where('adviser', $user->id)
+            ->with(['students' => function ($query) use ($search) {
+                if ($search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('first_name', 'like', '%' . $search . '%')
+                          ->orWhere('last_name', 'like', '%' . $search . '%')
+                          ->orWhere('student_number', 'like', '%' . $search . '%');
+                    });
+                }
+                $query->orderBy('last_name', 'asc')->orderBy('first_name', 'asc');
+            }])
+            ->get();
+
+        // Format data for JSON response
+        $data = $sections->map(function ($section) {
+            return [
+                'id' => $section->id,
+                'section' => $section->section,
+                'students' => $section->students->map(function ($student) {
+                    return [
+                        'id' => $student->id,
+                        'student_number' => $student->student_number,
+                        'first_name' => $student->first_name,
+                        'last_name' => $student->last_name,
+                        'program_name' => $student->program ? $student->program->name : 'N/A',
+                    ];
+                }),
+            ];
+        });
+
+        return response()->json(['sections' => $data]);
     }
 
     public function inputGrades()

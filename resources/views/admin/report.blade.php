@@ -9,7 +9,7 @@
                     <div class="card-body text-center">
                         <div class="d-flex align-items-center justify-content-center mb-2">
                             <i class="fas fa-users text-primary fs-2 me-2"></i>
-                            <h2 class="mb-0 text-primary fw-bold">{{ $totalStudents ?? '---' }}</h2>
+                            <h2 class="mb-0 text-primary fw-bold">{{ $Studentcount ?? '---' }}</h2>
                         </div>
                         <p class="text-muted mb-0 fw-medium">Total Students</p>
                     </div>
@@ -20,7 +20,7 @@
                     <div class="card-body text-center">
                         <div class="d-flex align-items-center justify-content-center mb-2">
                             <i class="fas fa-graduation-cap text-success fs-2 me-2"></i>
-                            <h2 class="mb-0 text-success fw-bold">{{ $activeStudents ?? '---' }}</h2>
+                            <h2 class="mb-0 text-success fw-bold">{{ $studentCount ?? '---' }}</h2>
                         </div>
                         <p class="text-muted mb-0 fw-medium">Active Students</p>
                     </div>
@@ -54,11 +54,11 @@
         <div class="row">
             <!-- Quick Export Section -->
             <div class="col-lg-6 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-gradient text-white py-3" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                <div class="card border-0 shadow-sm h-90">
+                    <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
                         <div class="d-flex align-items-center">
                             <i class="fas fa-download me-2 fs-5"></i>
-                            <h4 class="mb-0 fw-bold text-dark">Quick Export</h4>
+                            <h4 class="mb-0 fw-bold text-white">Quick Export</h4>
                         </div>
                     </div>
                     <div class="card-body p-4">
@@ -103,11 +103,11 @@
 
             <!-- Filtered Export Section -->
             <div class="col-lg-6 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-gradient text-white py-3" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+                <div class="card border-0 shadow-sm h-90">
+                    <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
                         <div class="d-flex align-items-center">
                             <i class="fas fa-filter me-2 fs-5"></i>
-                            <h4 class="mb-0 fw-bold text-dark">Filtered Export</h4>
+                            <h4 class="mb-0 fw-bold text-white">Filtered Export</h4>
                         </div>
                     </div>
                     <div class="card-body p-4">
@@ -181,43 +181,15 @@
                         </div>
                     </div>
                 </div>
-
-        <div class="p-3">
-          <h5 class="card-title pb-0">Filter Students</h5>
-          <hr>
-          <form class="row" action="students/export/filtered" style="max-width: 500px;">
-            @csrf
-            <p>Use this form to generate an Excel export of students filtered by academic year or section</p>
-            
-
-            <div class="col-12 mb-3">
-              <label for="year">School Year:</label>
-              <select class="form-select dropdown-input-tab" name="year" id="year">
-                  <option value="2024-2025">2024-2025</option>
-                  <option value="2023-2024">2023-2024</option>
-                  <option value="2022-2023">2022-2023</option>
-                  <option value="2021-2022">2021-2022</option>
-                  <option value="2020-2021">2020-2021</option>
-                  <option value="2019-2020">2019-2020</option>
-                  <option value="2018-2019">2018-2019</option>
-                  <option value="2017-2018">2017-2018</option>
-                  <option value="2016-2017">2016-2017</option>
-                  <option value="2015-2016">2015-2016</option>
-                  <option value="2014-2015">2014-2015</option>
-                  <option value="2013-2014">2013-2014</option>
-              </select>
-
             </div>
-        </div>
 
-
-        <!-- Recent Reports Section -->
+             <!--  Reports guidelines -->
         <div class="card border-0 shadow-sm">
-            <div class="card-header bg-gradient text-white py-3" style="background: linear-gradient(135deg, #17a2b8 0%, #6610f2 100%);">
+            <div class="card-header  text-white py-3" style="background: linear-gradient(135deg, #17a2b8 0%, #6610f2 100%);">
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-history me-2 fs-5"></i>
-                        <h4 class="mb-0 fw-bold text-dark">Export Guidelines</h4>
+                        <h4 class="mb-0 fw-bold text-white">Export Guidelines</h4>
                     </div>
                 </div>
             </div>
@@ -257,34 +229,6 @@
                         </div>
                     </div>
                 </div>
-
-            <div class="col-12 mb-3">
-              <label for="year">Semester:</label>
-              <select class="form-select dropdown-input-tab" name="semester">
-                  <option value=1>1st</option>
-                  <option value=2>2nd</option>
-                 
-              </select>
-            </div>
-            
-            <div class="col-12 mb-3">
-              <label for="status">Enrollment Status:</label>
-              <select class="form-select dropdown-input-tab" name="status">
-                  <option value="Enrolled">Regular</option>
-                  <option value="graduated">Graduated</option>
-                  <option value="failed">Failed</option>
-                  <option value="returnee">Returnee</option>
-                  <option value="transferee">Transferee</option>
-                  <option value="octoberian">Octoberian</option>
-                  <option value="drop out">Drop Out</option>
-                  
-                  <!-- Add other statuses as needed -->
-              </select>
-
-            </div>
-        </div>
-    </div>
-
     <!-- Loading Modal -->
     <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
@@ -363,7 +307,7 @@
         document.getElementById('status').addEventListener('change', updatePreview);
     </script>
 
-    <!-- Enhanced Styles -->
+    
     <style>
         .card {
             transition: all 0.3s ease;

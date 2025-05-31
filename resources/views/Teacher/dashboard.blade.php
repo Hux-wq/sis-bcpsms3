@@ -107,10 +107,9 @@
                                 <p class="text-muted mb-0">Manage and view all students across your sections</p>
                             </div>
                             <div class="d-flex gap-2">
-                                <button class="btn btn-outline-secondary btn-sm rounded-pill">
-                                    <i class="fas fa-search me-1"></i>
-                                    Search
-                                </button>
+                                <form method="GET" action="{{ route('teacher.dashboard') }}" class="d-flex" id="searchForm" onsubmit="return false;">
+                                    <input type="text" name="search" id="searchInput" class="form-control form-control-sm rounded-pill me-2" placeholder="Search students..." value="{{ request('search') }}" autocomplete="off">
+                                </form>
                                 <button class="btn btn-outline-primary btn-sm rounded-pill">
                                     <i class="fas fa-filter me-1"></i>
                                     Filter
@@ -129,9 +128,9 @@
                                 </div>
                             </div>
                         @else
-                            <!-- Enhanced Tab Navigation -->
+                            <!--  Tab Navigation -->
                             <div class="px-4 pt-3">
-                                <ul class="nav nav-pills nav-fill" id="dashboardSectionTabs" role="tablist">
+                                <ul class="nav nav-pill nav-fill" id="dashboardSectionTabs" role="tablist">
                                     @foreach ($sections as $index => $section)
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link rounded-pill mx-1 @if($index == 0) active @endif" 
@@ -243,7 +242,7 @@
         </div>
     </section>
 
-    <!-- Enhanced Modal for Sections Schedule -->
+    <!-- Modal for Sections Schedule -->
     <div class="modal fade" id="sectionsScheduleModal" tabindex="-1" aria-labelledby="sectionsScheduleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content border-0 shadow">
@@ -448,5 +447,173 @@
             display: none;
         }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            let timeout = null;
+
+            searchInput.addEventListener('input', function () {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    performSearch(searchInput.value);
+                }, 300); // debounce delay 300ms
+            });
+        });
+
+        async function performSearch(query) {
+            const url = new URL("{{ route('teacher.dashboard.search') }}", window.location.origin);
+            url.searchParams.set('search', query);
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                updateStudentTabs(data.sections);
+            } catch (error) {
+                console.error('Error fetching search results:', error);
+            }
+        }
+
+        function updateStudentTabs(sections) {
+            const tabsContainer = document.getElementById('dashboardSectionTabs');
+            const tabsContentContainer = document.getElementById('dashboardSectionTabsContent');
+
+            // Clear existing tabs and content
+            tabsContainer.innerHTML = '';
+            tabsContentContainer.innerHTML = '';
+
+            if (sections.length === 0) {
+                tabsContentContainer.innerHTML = `
+                    <div class="text-center py-5">
+                        <div class="empty-state">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No Students Found</h5>
+                            <p class="text-muted">No students found in your sections.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            sections.forEach((section, index) => {
+                // Create tab button
+                const tabButton = document.createElement('button');
+                tabButton.className = 'nav-link rounded-pill mx-1' + (index === 0 ? ' active' : '');
+                tabButton.id = `dashboard-tab-${section.id}`;
+                tabButton.setAttribute('data-bs-toggle', 'tab');
+                tabButton.setAttribute('data-bs-target', `#dashboard-section-${section.id}`);
+                tabButton.type = 'button';
+                tabButton.role = 'tab';
+                tabButton.setAttribute('aria-controls', `dashboard-section-${section.id}`);
+                tabButton.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+                tabButton.innerHTML = `<i class="fas fa-chalkboard me-2"></i>Section ${section.section} <span class="badge bg-light text-dark ms-2">${section.students.length}</span>`;
+
+                const tabListItem = document.createElement('li');
+                tabListItem.className = 'nav-item';
+                tabListItem.role = 'presentation';
+                tabListItem.appendChild(tabButton);
+                tabsContainer.appendChild(tabListItem);
+
+                // Create tab content pane
+                const tabPane = document.createElement('div');
+                tabPane.className = 'tab-pane fade' + (index === 0 ? ' show active' : '');
+                tabPane.id = `dashboard-section-${section.id}`;
+                tabPane.role = 'tabpanel';
+                tabPane.setAttribute('aria-labelledby', `dashboard-tab-${section.id}`);
+
+                // Build table rows for students
+                let rowsHtml = '';
+                if (section.students.length === 0) {
+                    rowsHtml = `
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-user-slash fa-2x mb-2"></i>
+                                    <p>No students in this section yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    section.students.forEach((student, studentIndex) => {
+                        rowsHtml += `
+                            <tr class="student-row">
+                                <td class="px-4 py-3 align-middle">
+                                    <span class="badge bg-light text-dark rounded-pill">${studentIndex + 1}</span>
+                                </td>
+                                <td class="py-3 align-middle">
+                                    <span class="fw-medium">${student.student_number}</span>
+                                </td>
+                                <td class="py-3 align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-placeholder bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            <span class="text-primary fw-bold">
+                                                ${student.first_name.charAt(0).toUpperCase()}${student.last_name.charAt(0).toUpperCase()}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <div class="fw-medium">${student.first_name} ${student.last_name}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3 align-middle">
+                                    <span class="badge bg-secondary bg-opacity-20 text-dark rounded-pill px-3">
+                                        ${student.program_name}
+                                    </span>
+                                </td>
+                                <td class="py-3 align-middle">
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary btn-sm rounded-pill dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View Profile</a></li>
+                                            <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Remove</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                tabPane.innerHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="px-4 py-3 border-0">
+                                        <small class="text-muted fw-bold text-uppercase">No.</small>
+                                    </th>
+                                    <th class="py-3 border-0">
+                                        <small class="text-muted fw-bold text-uppercase">Student Number</small>
+                                    </th>
+                                    <th class="py-3 border-0">
+                                        <small class="text-muted fw-bold text-uppercase">Name</small>
+                                    </th>
+                                    <th class="py-3 border-0">
+                                        <small class="text-muted fw-bold text-uppercase">Program</small>
+                                    </th>
+                                    <th class="py-3 border-0">
+                                        <small class="text-muted fw-bold text-uppercase">Actions</small>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHtml}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                tabsContentContainer.appendChild(tabPane);
+            });
+        }
+    </script>
 
 </x-app-layout>
