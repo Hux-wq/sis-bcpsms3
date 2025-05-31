@@ -41,7 +41,7 @@
 
         <!-- Pending Requests Section -->
         <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-gradient text-white py-3" style="background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);">
+            <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-clock me-2 fs-5"></i>
                     <h4 class="mb-0 fw-bold">Pending Requests</h4>
@@ -132,7 +132,7 @@
 
         <!-- Accepted Requests Section -->
         <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-gradient text-white py-3" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+            <div class="card-header  text-white py-3" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-check-circle me-2 fs-5"></i>
                     <h4 class="mb-0 fw-bold">Accepted Requests</h4>
@@ -206,7 +206,7 @@
 
         <!-- Declined Requests Section -->
         <div class="card border-0 shadow-sm">
-            <div class="card-header bg-gradient text-white py-3" style="background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);">
+            <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-times-circle me-2 fs-5"></i>
                     <h4 class="mb-0 fw-bold">Declined Requests</h4>
