@@ -231,6 +231,14 @@
 
       <li class="nav-heading">Pages</li>
 
+      @if(auth()->check() && auth()->user()->isStudent())
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('student.courses') }}">
+          <i class="bi bi-journal-bookmark"></i><span>Courses</span>
+        </a>
+      </li>
+      @endif
+
       <li class="nav-item">
         <a class="nav-link collapsed" href="users-profile.html">
           <i class="bi bi-person"></i>

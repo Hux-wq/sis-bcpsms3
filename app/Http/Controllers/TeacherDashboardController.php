@@ -84,21 +84,66 @@ class TeacherDashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Get sections where the teacher is adviser with students eager loaded
+        // Get sections where the teacher is adviser with students and their program eager loaded
         $sections = Section::where('adviser', $user->id)
             ->with(['students' => function ($query) {
-                $query->orderBy('last_name', 'asc')->orderBy('first_name', 'asc');
+                $query->with('program')->orderBy('last_name', 'asc')->orderBy('first_name', 'asc');
             }])
             ->get();
 
+        // Get unique program_ids from students in the sections
+        $programIds = $sections->flatMap(function ($section) {
+            return $section->students->pluck('program_id');
+        })->unique()->filter();
+
+        // Fetch courses grouped by program_id limited to 8 courses per program
+        $coursesByProgram = [];
+        foreach ($programIds as $programId) {
+            $coursesByProgram[$programId] = \App\Models\Course::where('program_id', $programId)
+                ->limit(8)
+                ->get();
+        }
+
         return view('teacher.input-grades', [
             'sections' => $sections,
+            'coursesByProgram' => $coursesByProgram,
         ]);
     }
 
     public function storeGrades(Request $request)
     {
-        // TODO: Implement storing grades logic
+        $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'subject' => 'required|string',
+            'grade' => 'required',
+            'semester' => 'required|string',
+            'remarks' => 'nullable|string',
+        ]);
+
+        $student = \App\Models\Student::findOrFail($request->student_id);
+        $programId = $student->program_id;
+
+        // Find course by title and program_id
+        $course = \App\Models\Course::where('title', $request->subject)
+            ->where('program_id', $programId)
+            ->first();
+
+        if (!$course) {
+            return redirect()->route('teacher.grades.input')->with('error', 'Selected subject not found for the student\'s program.');
+        }
+
+        // Convert grade to decimal if possible
+        $gradeValue = is_numeric($request->grade) ? floatval($request->grade) : null;
+
+        \App\Models\Grade::create([
+            'student_id' => $student->id,
+            'course_id' => $course->id,
+            'program_id' => $programId,
+            'grade' => $gradeValue,
+            'remarks' => $request->remarks,
+            'grading_period' => $request->semester,
+        ]);
+
         return redirect()->route('teacher.grades.input')->with('success', 'Grade submitted successfully.');
     }
 

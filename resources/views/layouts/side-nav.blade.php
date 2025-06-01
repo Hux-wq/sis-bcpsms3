@@ -1,4 +1,3 @@
-<!-- ======= Enhanced Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
 
@@ -97,6 +96,14 @@
                             <div class="nav-link-content">
                                 <i class="fas fa-chart-pie"></i>
                                 <span>Dashboard</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('student.courses') }}" class="nav-link {{ request()->routeIs('student.courses') ? 'active' : '' }}">
+                            <div class="nav-link-content">
+                                <i class="fas fa-journal-whills"></i>
+                                <span>Courses</span>
                             </div>
                         </a>
                     </li>

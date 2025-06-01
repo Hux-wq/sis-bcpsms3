@@ -492,7 +492,7 @@
             Academic Performance
         </h3>
 
-        <!-- Custom Tabs -->
+        <!-- Tabs -->
         <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
             @for ($year = 1; $year <= 4; $year++)
                 <li class="nav-item" role="presentation">
@@ -511,29 +511,22 @@
         </ul>
 
         <div class="tab-content pt-3">
-            @for ($year = 1; $year <= 4; $year++)
+            
+        @for ($year = 1; $year <= 4; $year++)
                 <div class="tab-pane fade @if($year == 1) show active @endif" 
                      id="year-{{ $year }}" 
                      role="tabpanel" 
                      aria-labelledby="year-{{ $year }}-tab">
-                    @php
-                        $semesters = ['1st', '2nd'];
-                        $yearAverages = [];
-                    @endphp
+                        @php
+                            $semesters = ['1st Semester', '2nd Semester'];
+                            $yearAverages = [];
+                        @endphp
                     
                     @foreach ($semesters as $semester)
                         <h5 class="text-white mb-3">{{ $semester }} Semester</h5>
                         @php
-                            if (isset($courses) && $courses->count() > 0) {
-                                $shuffledCourses = $courses->shuffle()->take(3);
-                            } else {
-                                $shuffledCourses = collect([
-                                    (object)['course_code' => 'CS101', 'title' => 'Introduction to Computer Science'],
-                                    (object)['course_code' => 'MATH101', 'title' => 'Calculus I'],
-                                    (object)['course_code' => 'ENG101', 'title' => 'English Composition']
-                                ]);
-                            }
                             $semesterGrades = [];
+                            $courses = $academicPerformance[$year][$semester] ?? collect();
                         @endphp
                         
                         <div class="grades-table">
@@ -547,27 +540,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($shuffledCourses as $course)
-                                        @php
-                                            $fixedDummyGrades = [
-                                                '1st' => ['1.25', '1.5', '1.75'],
-                                                '2nd' => ['1.5', '1.75', '2.0']
-                                            ];
-                                            $grade = $fixedDummyGrades[$semester][$loop->index % 3];
+                                @foreach ($courses as $course)
+                                    @php
+                                        $grade = $course->grade;
+                                        if ($grade === null) {
+                                            $status = 'Pending';
+                                            $displayGrade = 'Pending';
+                                        } else {
+                                            $status = $grade <= 3.0 ? 'Passed' : 'Failed';
+                                            $displayGrade = number_format($grade, 2);
                                             $semesterGrades[] = floatval($grade);
-                                            $status = floatval($grade) <= 3.0 ? 'Passed' : 'Failed';
-                                        @endphp
-                                        <tr>
-                                            <td><strong>{{ $course->course_code }}</strong></td>
-                                            <td>{{ $course->title }}</td>
-                                            <td><span class="grade-badge">{{ $grade }}</span></td>
-                                            <td>
-                                                <span class="grade-badge {{ $status === 'Failed' ? 'failed' : '' }}">
-                                                    {{ $status }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td><strong>{{ $course->course_code }}</strong></td>
+                                        <td>{{ $course->title }}</td>
+                                        <td><span class="grade-badge">{{ $displayGrade }}</span></td>
+                                        <td>
+                                            <span class="grade-badge {{ $status === 'Failed' ? 'failed' : '' }}">
+                                                {{ $status }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -601,7 +596,7 @@
     </div>
 </section>
 
-<!-- All existing modals remain the same but with enhanced styling -->
+<!-- modals -->
 <!-- Make Payment Modal -->
 <div class="modal fade" id="makePaymentModal" tabindex="-1" aria-labelledby="makePaymentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -693,8 +688,6 @@
     </div>
 </div>
 
-<!-- Similar modal structure for other attendance modals (absent, late, total) -->
-<!-- I'll include them all with the same enhanced styling pattern -->
 
 <!-- Absent Modal -->
 <div class="modal fade" id="absentModal" tabindex="-1" aria-labelledby="absentModalLabel" aria-hidden="true">
@@ -870,7 +863,7 @@
 </div>
 
 <script>
-// Enhanced JavaScript for better user experience
+
 document.addEventListener('DOMContentLoaded', function() {
     // Add smooth scrolling animations
     const observerOptions = {
@@ -895,7 +888,7 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(card);
     });
 
-    // Enhanced form validation
+    //validation
     const paymentForm = document.getElementById('makePaymentForm');
     if (paymentForm) {
         paymentForm.addEventListener('submit', function(e) {

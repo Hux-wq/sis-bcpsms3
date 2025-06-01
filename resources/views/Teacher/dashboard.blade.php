@@ -211,7 +211,7 @@
                                                                     <i class="fas fa-ellipsis-h"></i>
                                                                 </button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View Profile</a></li>
+                                                                    <li><a class="dropdown-item" href="/student/profile/{{$student->id}}"><i class="fas fa-eye me-2"></i>View Profile</a></li>
                                                                     <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
                                                                     <li><hr class="dropdown-divider"></li>
                                                                     <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Remove</a></li>

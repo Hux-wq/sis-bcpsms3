@@ -12,7 +12,7 @@
                         </h5>
                     </div>
                     <div class="card-body p-4">
-                        <!-- Enhanced Tab Navigation -->
+                        <!--Tab Navigation -->
                         <div class="mb-4">
                             <ul class="nav nav-pills nav-fill bg-light rounded p-1" id="gradeSectionTabs" role="tablist">
                                 @foreach ($sections as $index => $section)
@@ -41,7 +41,7 @@
                                  role="tabpanel" 
                                  aria-labelledby="grade-tab-{{ $section->id }}">
                                 
-                                <!-- Enhanced Search Bar -->
+                                <!-- Search Bar -->
                                 <div class="row mb-4">
                                     <div class="col-md-6">
                                         <div class="input-group">
@@ -63,7 +63,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Enhanced Student Table -->
+                                <!--  Student Table -->
                                 <div class="table-responsive">
                                     <table class="table table-hover align-middle" id="studentTable-{{ $section->id }}">
                                         <thead class="table-dark">
@@ -134,7 +134,7 @@
         </div>
     </section>
 
-    <!-- Enhanced Grade Input Modal -->
+    <!--    Grade Input Modal -->
     <div class="modal fade" id="gradeInputModal" tabindex="-1" aria-labelledby="gradeInputModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form method="POST" action="{{ route('teacher.grades.store') }}" id="gradeForm">
@@ -157,11 +157,6 @@
                                 </label>
                                 <select class="form-select form-select-lg" id="subject" name="subject" required>
                                     <option value="" disabled selected>Choose a subject...</option>
-                                    <option value="Calculus">📊 Calculus</option>
-                                    <option value="Physics">⚛️ Physics</option>
-                                    <option value="Chemistry">🧪 Chemistry</option>
-                                    <option value="Literature">📚 Literature</option>
-                                    <option value="Philosophy">🤔 Philosophy</option>
                                 </select>
                             </div>
                             <div class="col-12 mb-3">
@@ -179,6 +174,28 @@
                                     <i class="fas fa-info-circle me-1"></i>
                                     Enter numerical grade, letter grade, or descriptive assessment
                                 </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="semester" class="form-label fw-medium">
+                                    <i class="fas fa-calendar-alt me-1 text-primary"></i>
+                                    Semester
+                                </label>
+                                <select class="form-select form-select-lg" id="semester" name="semester" required>
+                                    <option value="" disabled selected>Choose a semester...</option>
+                                    <option value="1st Semester">1st Semester</option>
+                                    <option value="2nd Semester">2nd Semester</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="remarks" class="form-label fw-medium">
+                                    <i class="fas fa-comment-alt me-1 text-info"></i>
+                                    Remarks
+                                </label>
+                                <input type="text" 
+                                       class="form-control form-control-lg" 
+                                       id="remarks" 
+                                       name="remarks" 
+                                       readonly />
                             </div>
                         </div>
                     </div>
@@ -297,22 +314,55 @@
     </style>
 
     <script>
-        // Enhanced grade modal function
+        //  grade modal function
         function showGradeModal(studentId, studentName) {
             const modal = new bootstrap.Modal(document.getElementById('gradeInputModal'));
             document.getElementById('modal_student_id').value = studentId;
             document.getElementById('modal_student_name').textContent = studentName;
-            document.getElementById('subject').value = "";
             document.getElementById('grade').value = "";
-            
+
+            // Clear previous subject options except the placeholder
+            const subjectSelect = document.getElementById('subject');
+            subjectSelect.innerHTML = '<option value="" disabled selected>Choose a subject...</option>';
+
+            // Find the student in the sections data passed from backend
+            const sections = @json($sections);
+            const coursesByProgram = @json($coursesByProgram);
+
+            let studentProgramId = null;
+            for (const section of sections) {
+                const student = section.students.find(s => s.id === studentId);
+                if (student) {
+                    studentProgramId = student.program_id;
+                    break;
+                }
+            }
+
+            if (studentProgramId && coursesByProgram[studentProgramId]) {
+                const courses = coursesByProgram[studentProgramId];
+                for (const course of courses) {
+                    const option = document.createElement('option');
+                    option.value = course.title;
+                    option.textContent = course.title;
+                    subjectSelect.appendChild(option);
+                }
+            } else {
+                // If no program or courses found, show a disabled option
+                const option = document.createElement('option');
+                option.value = "";
+                option.textContent = "No subjects available";
+                option.disabled = true;
+                subjectSelect.appendChild(option);
+            }
+
             // Focus on subject field when modal opens
             modal.show();
             setTimeout(() => {
-                document.getElementById('subject').focus();
+                subjectSelect.focus();
             }, 500);
         }
 
-        // Enhanced search function with empty state handling
+        // Enhnced search function with empty state handling
         function filterStudents(sectionId) {
             const input = document.getElementById("studentSearchInput-" + sectionId);
             const filter = input.value.toUpperCase();
@@ -368,6 +418,22 @@
                     return false;
                 }
             });
+
+            // Add remarks update on grade input change
+            const gradeInput = document.getElementById('grade');
+            const remarksInput = document.getElementById('remarks');
+            gradeInput.addEventListener('input', function() {
+                const gradeValue = parseFloat(gradeInput.value);
+                if (!isNaN(gradeValue)) {
+                    if (gradeValue <= 3.0) {
+                        remarksInput.value = 'Passed';
+                    } else {
+                        remarksInput.value = 'Failed';
+                    }
+                } else {
+                    remarksInput.value = '';
+                }
+            });
         });
 
         // Add smooth scrolling and animations
@@ -383,6 +449,35 @@
                     row.style.transform = 'translateY(0)';
                 }, index * 50);
             });
+        });
+    </script>
+
+    <!-- Include SweetAlert2 from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '{{ session('success') }}',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '{{ session('error') }}',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+            @endif
         });
     </script>
 </x-app-layout>

@@ -14,11 +14,9 @@ class StudentDashboardController extends Controller
     {
 
         $linking_id = Auth::User()->linking_id;
-        $student = Student::with(['program', 'academicRecords.section'])->findOrFail($linking_id);
+        $student = Student::with(['program', 'academicRecords.section', 'studentSchoolInfo'])->findOrFail($linking_id);
 
         $latestAcademicRecord = $student->academicRecords->sortByDesc('created_at')->first();
-
-        $courses = \App\Models\Course::where('program_id', $student->program_id)->get();
 
         $attendancePercentages = [];
         $absencePercentages = [];
@@ -27,36 +25,70 @@ class StudentDashboardController extends Controller
         $lateDates = [];
         $lateTimes = [];
 
-        foreach ($courses as $index => $course) {
-            $attendancePercentages[] = rand(85, 100);
-            $absencePercentages[] = rand(0, 10);
-            $absenceDates[] = ['2023-01-10', '2023-01-15']; // static example, can be randomized or expanded
-            $latePercentages[] = rand(0, 5);
-            $lateDates[] = ['2023-01-12', '2023-01-18']; // static example
-            $lateTimes[] = ['08:05 AM', '08:10 AM']; // static example
+        // Prepare academic performance data
+        $academicPerformance = [];
+
+        $semesters = ['1st Semester', '2nd Semester'];
+        $years = [1, 2, 3, 4];
+
+        // Fetch all courses for the student's program once
+        $allCourses = \App\Models\Course::where('program_id', $student->program_id)->get()->groupBy('level');
+
+        // Fetch all grades for the student and program once
+        $allGrades = \App\Models\Grade::where('student_id', $student->id)
+            ->where('program_id', $student->program_id)
+            ->get();
+
+        foreach ($years as $year) {
+            foreach ($semesters as $semester) {
+                // Get all courses for the program (ignore year level)
+                $courses = $allCourses->flatten();
+
+                // Map courses with their matching grades for the current semester
+                $coursesWithGrades = $courses->map(function ($course) use ($allGrades, $semester) {
+                    $gradeRecord = $allGrades->first(function ($grade) use ($course, $semester) {
+                        return $grade->course_id === $course->id && $grade->grading_period === $semester;
+                    });
+
+                    return (object)[
+                        'course_code' => $course->course_code,
+                        'title' => $course->title,
+                        'grade' => $gradeRecord ? $gradeRecord->grade : null,
+                        'remarks' => $gradeRecord ? $gradeRecord->remarks : 'Pending',
+                    ];
+                });
+
+                $academicPerformance[$year][$semester] = $coursesWithGrades;
+            }
         }
 
-        // Fetch requested documents for the student
+        // Dummy data for attendance and other sections remain unchanged
+        foreach ($allCourses->flatten() as $index => $course) {
+            $attendancePercentages[] = rand(85, 100);
+            $absencePercentages[] = rand(0, 10);
+            $absenceDates[] = ['2023-01-10', '2023-01-15'];
+            $latePercentages[] = rand(0, 5);
+            $lateDates[] = ['2023-01-12', '2023-01-18'];
+            $lateTimes[] = ['08:05 AM', '08:10 AM'];
+        }
+
         $requestedDocuments = DocumentRequest::where('student_id', $linking_id)
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
-        // Dummy data for expenses
         $recentExpenses = [
             ['title' => 'Books Purchase', 'amount' => 1500.00, 'date' => '2023-06-01'],
             ['title' => 'Lab Fee', 'amount' => 2000.00, 'date' => '2023-05-28'],
             ['title' => 'Sports Fee', 'amount' => 500.00, 'date' => '2023-05-20'],
         ];
 
-        // Dummy data for activities
         $recentActivities = [
             ['activity' => 'Joined Coding Club', 'date' => '2023-05-15'],
             ['activity' => 'Attended Seminar on AI', 'date' => '2023-05-10'],
             ['activity' => 'Volunteered for Community Service', 'date' => '2023-05-05'],
         ];
 
-        // Share variables globally for the header layout
         View::share('requestedDocuments', $requestedDocuments);
         View::share('recentExpenses', $recentExpenses);
         View::share('recentActivities', $recentActivities);
@@ -64,13 +96,34 @@ class StudentDashboardController extends Controller
         return view('student.dashboard', [
             'student'=> $student,
             'latestAcademicRecord' => $latestAcademicRecord,
-            'courses' => $courses,
+            'academicPerformance' => $academicPerformance,
             'attendancePercentages' => $attendancePercentages,
             'absencePercentages' => $absencePercentages,
             'absenceDates' => $absenceDates,
             'latePercentages' => $latePercentages,
             'lateDates' => $lateDates,
             'lateTimes' => $lateTimes,
+        ]);
+    }
+
+    public function courses()
+    {
+        $linking_id = Auth::User()->linking_id;
+        $student = Student::findOrFail($linking_id);
+
+        $programId = $student->program_id;
+
+        $courses = collect();
+
+        if ($programId) {
+            $courses = \App\Models\Course::where('program_id', $programId)
+                ->limit(8)
+                ->get();
+        }
+
+        return view('student.courses', [
+            'student' => $student,
+            'courses' => $courses,
         ]);
     }
 }
