@@ -22,10 +22,56 @@ class AdminStudentTableController extends Controller
         
         $acad_records = AcademicRecord::where('student_id', $id)->get();
        
-        // Load a limited number of courses (3 to 8) for the student randomly
-        $courses = \App\Models\Course::inRandomOrder()->limit(rand(3, 8))->get();
+        // Load all courses for the student's program
+        $courses = \App\Models\Course::where('program_id', $student->program_id)->get();
+
+        // Load grades for the student with course relationship
+        $grades = \App\Models\Grade::with('course')
+            ->where('student_id', $id)
+            ->get()
+            ->keyBy('course_id');
+
+        // Prepare academicPerformance data structure with all courses in 1st year
+        $academicPerformance = [];
+
+        $year = 1; // Assign all courses to 1st year as per user request
+
+        foreach ($courses as $course) {
+            $semesterRaw = $course->semester ?? null;
+
+            // Convert semester string to integer key if possible
+            $semester = null;
+            if (is_numeric($semesterRaw)) {
+                $semester = (int)$semesterRaw;
+            } else {
+                // Map common string values to integers
+                $semesterMap = [
+                    '1st Semester' => 1,
+                    '2nd Semester' => 2,
+                    'First Semester' => 1,
+                    'Second Semester' => 2,
+                ];
+                $semester = $semesterMap[$semesterRaw] ?? 1; // Default to 1 if unknown
+            }
+
+            if (!isset($academicPerformance[$year])) {
+                $academicPerformance[$year] = [];
+            }
+            if (!isset($academicPerformance[$year][$semester])) {
+                $academicPerformance[$year][$semester] = collect();
+            }
+
+            // Find grade for the course if exists
+            $grade = $grades->has($course->id) ? $grades->get($course->id)->grade : null;
+
+            // Clone course to avoid modifying original relation
+            $courseWithGrade = clone $course;
+            $courseWithGrade->grade = $grade;
+
+            $academicPerformance[$year][$semester]->push($courseWithGrade);
+        }
     
-        return view('admin.student-profile', compact('student','acad_records', 'courses'));
+        return view('admin.student-profile', compact('student','acad_records', 'courses', 'grades', 'academicPerformance'));
     }
 
     public function studentCreateUserAccount(Request $request)
