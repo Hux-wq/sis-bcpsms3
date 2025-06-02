@@ -9,7 +9,7 @@
                     <div class="card-body text-white p-4">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h3 class="mb-1">Welcome back, Teacher!</h3>
+                                <h3 class="mb-1">Welcome back</h3>
                                 <p class="mb-0 opacity-75">Here's an overview of your classes and students</p>
                             </div>
                             <div class="d-none d-md-block">
