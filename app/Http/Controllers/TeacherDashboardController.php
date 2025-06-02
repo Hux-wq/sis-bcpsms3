@@ -34,7 +34,7 @@ class TeacherDashboardController extends Controller
             return $section->students->count();
         });
 
-        return view('Teacher.dashboard', [
+        return view('teacher.dashboard', [
             'sections' => $sections,
             'sectionsCount' => $sectionsCount,
             'studentsCount' => $studentsCount,
