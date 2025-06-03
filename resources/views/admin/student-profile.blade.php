@@ -976,14 +976,44 @@
             });
 
             // Enhanced button interactions
-            document.getElementById('createAccountBtn').addEventListener('click', function() {
-                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating...';
-                setTimeout(() => {
-                    this.innerHTML = '<i class="fas fa-check me-2"></i>Account Created!';
-                    this.classList.remove('btn-success');
-                    this.classList.add('btn-info');
-                }, 2000);
-            });
+            const createAccountButton = document.getElementById('createAccountButton');
+            const createAccountForm = document.getElementById('createAccountForm');
+
+            if (createAccountButton && createAccountForm) {
+                createAccountButton.addEventListener('click', function() {
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating...';
+
+                    const formData = new FormData(createAccountForm);
+
+                    fetch("{{ route('studentUserAccount.create') }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                            'Accept': 'application/json',
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            createAccountButton.innerHTML = '<i class="fas fa-check me-2"></i>Account Created!';
+                            createAccountButton.classList.remove('btn-success');
+                            createAccountButton.classList.add('btn-info');
+                        } else {
+                            alert(data.message || 'Failed to create account.');
+                            createAccountButton.disabled = false;
+                            createAccountButton.innerHTML = 'Create Account';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while creating the account.');
+                        createAccountButton.disabled = false;
+                        createAccountButton.innerHTML = 'Create Account';
+                    });
+                });
+            }
 
             // Form validation
             document.querySelectorAll('form').forEach(form => {
