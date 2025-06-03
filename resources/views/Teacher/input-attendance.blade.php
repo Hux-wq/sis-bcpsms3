@@ -59,7 +59,7 @@
                     <div class="card-body p-4">
                         <form method="POST" action="{{ route('teacher.attendance.store') }}">
                             @csrf
-                            
+                            <input type="hidden" name="section_id" id="current-section-id" value="{{ $sections[0]->id ?? '' }}">
                             <!-- Controls Section -->
                             <div class="controls-section mb-4 p-4 bg-light rounded-3">
                                 <div class="row align-items-end">
@@ -91,10 +91,6 @@
                                             <button type="button" class="btn btn-outline-secondary rounded-pill flex-fill" id="clear-all">
                                                 <i class="fas fa-eraser me-1"></i>
                                                 Clear All
-                                            </button>
-                                            <button type="button" class="btn btn-primary rounded-pill flex-fill" id="save-draft">
-                                                <i class="fas fa-save me-1"></i>
-                                                Save Draft
                                             </button>
                                         </div>
                                     </div>
@@ -177,6 +173,9 @@
                                                     <th class="py-3 border-0 text-center" style="min-width: 300px;">
                                                         <small class="text-muted fw-bold text-uppercase">Attendance Status</small>
                                                     </th>
+                                                    <th class="py-3 border-0 text-center" style="min-width: 200px;">
+                                                        <small class="text-muted fw-bold text-uppercase">Course/Subject</small>
+                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -240,10 +239,22 @@
                                                             </div>
                                                         </div>
                                                     </td>
+                                                    <td class="py-3 align-middle">
+                                                        <select name="course_selection[{{ $student->id }}]" class="form-select form-select-sm" required>
+                                                            <option value="" disabled selected>Select Course</option>
+                                                            @if(isset($coursesByProgram[$student->program_id]))
+                                                                @foreach($coursesByProgram[$student->program_id] as $course)
+                                                                    <option value="{{ $course->id }}">{{ $course->title }}</option>
+                                                                @endforeach
+                                                            @else
+                                                                <option value="" disabled>No courses available</option>
+                                                            @endif
+                                                        </select>
+                                                    </td>
                                                 </tr>
                                                 @empty
                                                 <tr>
-                                                    <td colspan="4" class="text-center py-5">
+                                                    <td colspan="5" class="text-center py-5">
                                                         <div class="text-muted">
                                                             <i class="fas fa-user-slash fa-3x mb-3"></i>
                                                             <h6>No Students Found</h6>
@@ -272,7 +283,7 @@
                                                 <i class="fas fa-eye me-1"></i>
                                                 Preview
                                             </button>
-                                            <button type="submit" class="btn btn-success rounded-pill px-4">
+                                            <button type="button" class="btn btn-success rounded-pill px-4" id="submit-attendance-btn">
                                                 <i class="fas fa-paper-plane me-1"></i>
                                                 Submit Attendance
                                             </button>
@@ -506,20 +517,30 @@
 
             // Clear all functionality
             document.getElementById('clear-all').addEventListener('click', function () {
-                if (confirm('Are you sure you want to clear all attendance selections?')) {
-                    document.querySelectorAll('input[type="radio"][name^="attendance_status"]').forEach(radio => {
-                        radio.checked = false;
-                    });
-                    presentCount = 0;
-                    absentCount = 0;
-                    lateCount = 0;
-                    updateCounters();
-                    
-                    // Clear dataset
-                    document.querySelectorAll('.student-row').forEach(row => {
-                        delete row.dataset.currentAttendance;
-                    });
-                }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to clear all attendance selections?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, clear all!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.querySelectorAll('input[type="radio"][name^="attendance_status"]').forEach(radio => {
+                            radio.checked = false;
+                        });
+                        presentCount = 0;
+                        absentCount = 0;
+                        lateCount = 0;
+                        updateCounters();
+                        
+                        // Clear dataset
+                        document.querySelectorAll('.student-row').forEach(row => {
+                            delete row.dataset.currentAttendance;
+                        });
+                    }
+                });
             });
 
             // Search functionality
@@ -542,30 +563,55 @@
                 });
             });
 
-            // Save draft functionality (placeholder)
-            document.getElementById('save-draft').addEventListener('click', function () {
-                alert('Draft saved successfully! (This is a placeholder - implement actual save functionality)');
-            });
 
-            // Form submission validation
-            document.querySelector('form').addEventListener('submit', function (e) {
-                const allRadios = document.querySelectorAll('input[type="radio"][name^="attendance_status"]');
-                const checkedRadios = document.querySelectorAll('input[type="radio"][name^="attendance_status"]:checked');
+            // Form submission validation moved to submit button click with SweetAlert
+            document.getElementById('submit-attendance-btn').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const form = this.closest('form');
+                const currentSectionId = document.getElementById('current-section-id').value;
+                const allRadios = form.querySelectorAll('.attendance-radio-' + currentSectionId);
+                const checkedRadios = form.querySelectorAll('.attendance-radio-' + currentSectionId + ':checked');
                 const studentCount = allRadios.length / 3; // 3 radio buttons per student
-                
+
                 if (checkedRadios.length < studentCount) {
-                    e.preventDefault();
-                    alert('Please mark attendance for all students before submitting.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Incomplete',
+                        text: 'Please mark attendance for all students in the selected section before submitting.',
+                    });
                     return;
                 }
 
-                if (!confirm('Are you sure you want to submit this attendance record?')) {
-                    e.preventDefault();
-                }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to submit this attendance record?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, submit',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
             });
+
+            // Show success message if present in session
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '{{ session('success') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            @endif
 
             // Initialize counters
             updateCounters();
         });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </x-app-layout>

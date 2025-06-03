@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Section;
 use App\Models\Student;
+use App\Models\Attendance;
 
 class TeacherDashboardController extends Controller
 {
@@ -158,14 +159,70 @@ class TeacherDashboardController extends Controller
             }])
             ->get();
 
+        // Get unique program_ids from students in the sections
+        $programIds = $sections->flatMap(function ($section) {
+            return $section->students->pluck('program_id');
+        })->unique()->filter();
+
+        // Fetch courses grouped by program_id limited to 8 courses per program
+        $coursesByProgram = [];
+        foreach ($programIds as $programId) {
+            $coursesByProgram[$programId] = \App\Models\Course::where('program_id', $programId)
+                ->limit(8)
+                ->get();
+        }
+
         return view('teacher.input-attendance', [
             'sections' => $sections,
+            'coursesByProgram' => $coursesByProgram,
         ]);
     }
 
     public function storeAttendance(Request $request)
     {
-        // TODO: Implement storing attendance logic
+        $request->validate([
+            'attendance_date' => 'required|date',
+            'attendance_status' => 'required|array',
+            'course_selection' => 'required|array',
+            'section_id' => 'required|exists:sections,id',
+        ]);
+
+        $attendanceDate = $request->input('attendance_date');
+        $attendanceStatus = $request->input('attendance_status');
+        $courseSelection = $request->input('course_selection');
+        $sectionId = $request->input('section_id');
+
+        // Get students in the section to validate attendance submission is only for these students
+        $section = \App\Models\Section::with('students')->findOrFail($sectionId);
+        $sectionStudentIds = $section->students->pluck('id')->toArray();
+
+        foreach ($attendanceStatus as $studentId => $status) {
+            if (!in_array($studentId, $sectionStudentIds)) {
+                // Skip students not in the submitted section
+                continue;
+            }
+
+            $subjectId = $courseSelection[$studentId] ?? null;
+
+            if (!$subjectId) {
+                continue; // Skip if no course selected for student
+            }
+
+            // Create or update attendance record for the student on the date and subject
+            \App\Models\Attendance::updateOrCreate(
+                [
+                    'student_id' => $studentId,
+                    'subject_id' => $subjectId,
+                    'attendance_date' => $attendanceDate,
+                ],
+                [
+                    'status' => $status,
+                    'check_in_time' => null,
+                ]
+            );
+        }
+
         return redirect()->route('teacher.attendance.input')->with('success', 'Attendance submitted successfully.');
     }
-}
+    
+    }
