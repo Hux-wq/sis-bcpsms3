@@ -513,8 +513,8 @@
   /* Global styles */
   body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f8f9fc;
-    color: #444;
+    background-color: #f9f9f9;
+    color: #222;
   }
   
   .section.dashboard {
@@ -525,10 +525,10 @@
   .card {
     border: none;
     border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     transition: all 0.3s ease;
     margin-bottom: 20px;
-    background-color:rgb(207, 207, 207) !important;
+    background-color: #ffffff !important;
     overflow: hidden;
   }
   
@@ -544,14 +544,14 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
     pointer-events: none;
     border-radius: 12px;
   }
   
   .dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
   }
   
   .card-body {
@@ -562,46 +562,46 @@
   .card-icon {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+    background: linear-gradient(135deg, #4a90e2 0%, #357ABD 100%);
     color: white;
     font-size: 24px;
-    box-shadow: 0 5px 15px rgba(110, 142, 251, 0.4);
+    box-shadow: 0 6px 18px rgba(74, 144, 226, 0.5);
     transition: all 0.3s ease;
     border-radius: 50%;
   }
   
   .dashboard-card:hover .card-icon {
-    transform: scale(1.1);
+    transform: scale(1.15);
   }
   
   .sales-card .card-icon {
-    background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+    background: linear-gradient(135deg, #4a90e2 0%, #357ABD 100%);
   }
   
   .revenue-card .card-icon {
-    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    background: linear-gradient(135deg, #009688 0%, #26a69a 100%);
   }
   
   .customers-card .card-icon {
-    background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+    background: linear-gradient(135deg, #e91e63 0%, #ff4081 100%);
   }
   
   #gfdoCard .card-icon {
-    background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
+    background: linear-gradient(135deg, #ff5722 0%, #ff9800 100%);
   }
   
   /* Card text styles */
   .card-title {
-    color: #555;
+    color: #333;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 8px;
   }
   
   .card-value {
-    color: #333;
-    font-size: 28px;
-    font-weight: 600;
+    color: #111;
+    font-size: 30px;
+    font-weight: 700;
     margin: 0;
   }
   
@@ -611,16 +611,16 @@
   }
   
   .chart-title {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
     margin-bottom: 20px;
-    color: #333;
+    color: #111;
     text-align: center;
   }
   
   .chart-container {
     position: relative;
-    height: 300px;
+    height: 320px;
     width: 100%;
   }
   
@@ -639,59 +639,59 @@
   .outcome-item {
     display: flex;
     justify-content: space-between;
-    padding: 5px 8px;
-    border-radius: 6px;
-    font-weight: 500;
-    color: #333;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #222;
   }
   
   .outcome-item.graduated {
-    background-color: rgba(76, 175, 80, 0.15);
-    border-left: 4px solid #4caf50;
+    background-color: rgba(56, 142, 60, 0.2);
+    border-left: 5px solid #388e3c;
   }
   
   .outcome-item.failed {
-    background-color: rgba(244, 67, 54, 0.15);
-    border-left: 4px solid #f44336;
+    background-color: rgba(211, 47, 47, 0.2);
+    border-left: 5px solid #d32f2f;
   }
   
   .outcome-item.dropped {
-    background-color: rgba(255, 152, 0, 0.15);
-    border-left: 4px solid #ff9800;
+    background-color: rgba(245, 124, 0, 0.2);
+    border-left: 5px solid #f57c00;
   }
   
   .outcome-label {
-    font-weight: 500;
+    font-weight: 600;
   }
   
   .outcome-value {
-    font-weight: 600;
+    font-weight: 700;
   }
   
   /* Media queries for responsiveness */
   @media (max-width: 992px) {
     .chart-container {
-      height: 250px;
+      height: 280px;
     }
   }
   
   @media (max-width: 768px) {
     .section.dashboard {
-      padding: 10px 0;
+      padding: 12px 0;
     }
     
     .card-body {
-      padding: 1rem;
+      padding: 1.2rem;
     }
     
     .card-icon {
-      width: 50px;
-      height: 50px;
-      font-size: 20px;
+      width: 54px;
+      height: 54px;
+      font-size: 22px;
     }
     
     .card-value {
-      font-size: 24px;
+      font-size: 26px;
     }
   }
 </style>
