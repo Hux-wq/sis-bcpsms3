@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             MassSeeder::class,
             SectionSeeder::class,
+            GradeSeeder::class,
+            AttendanceSeeder::class,
             // UserSeeder::class,
             // UserNameSeeder::class,
             // UserBasicSeeder::class,

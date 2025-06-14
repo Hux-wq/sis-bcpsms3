@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use App\Models\Student;
 use App\Models\DocumentRequest;
+use App\Models\Attendance;
 
 class StudentDashboardController extends Controller
 {
@@ -62,15 +63,15 @@ class StudentDashboardController extends Controller
             }
         }
 
-        // Dummy data for attendance and other sections remain unchanged
-        foreach ($allCourses->flatten() as $index => $course) {
-            $attendancePercentages[] = rand(85, 100);
-            $absencePercentages[] = rand(0, 10);
-            $absenceDates[] = ['2023-01-10', '2023-01-15'];
-            $latePercentages[] = rand(0, 5);
-            $lateDates[] = ['2023-01-12', '2023-01-18'];
-            $lateTimes[] = ['08:05 AM', '08:10 AM'];
-        }
+        // // Dummy data for attendance and other sections remain unchanged
+        // foreach ($allCourses->flatten() as $index => $course) {
+        //     $attendancePercentages[] = rand(85, 100);
+        //     $absencePercentages[] = rand(0, 10);
+        //     $absenceDates[] = ['2023-01-10', '2023-01-15'];
+        //     $latePercentages[] = rand(0, 5);
+        //     $lateDates[] = ['2023-01-12', '2023-01-18'];
+        //     $lateTimes[] = ['08:05 AM', '08:10 AM'];
+        // }
 
         $requestedDocuments = DocumentRequest::where('student_id', $linking_id)
             ->orderBy('created_at', 'desc')
@@ -93,16 +94,38 @@ class StudentDashboardController extends Controller
         View::share('recentExpenses', $recentExpenses);
         View::share('recentActivities', $recentActivities);
 
+        // Fetch attendances for the student
+        $attendances = \App\Models\Attendance::with('subject')->where('student_id', $student->id)
+            ->orderBy('attendance_date', 'desc')
+            ->get();
+
+        $presentAttendances = $attendances->where('status', 'present');
+        $absentAttendances = $attendances->where('status', 'absent');
+        $lateAttendances = $attendances->where('status', 'late');
+
+        $totalCount = $attendances->count();
+        $totalPresent = $presentAttendances->count();
+        $totalAbsent = $absentAttendances->count();
+        $totalLate = $lateAttendances->count();
+
+        $presentPercentage = $totalCount > 0 ? round(($totalPresent / $totalCount) * 100) : 0;
+        $absentPercentage = $totalCount > 0 ? round(($totalAbsent / $totalCount) * 100) : 0;
+        $latePercentage = $totalCount > 0 ? round(($totalLate / $totalCount) * 100) : 0;
+
         return view('student.dashboard', [
             'student'=> $student,
             'latestAcademicRecord' => $latestAcademicRecord,
             'academicPerformance' => $academicPerformance,
-            'attendancePercentages' => $attendancePercentages,
-            'absencePercentages' => $absencePercentages,
-            'absenceDates' => $absenceDates,
-            'latePercentages' => $latePercentages,
-            'lateDates' => $lateDates,
-            'lateTimes' => $lateTimes,
+            'presentPercentage' => $presentPercentage,
+            'absentPercentage' => $absentPercentage,
+            'latePercentage' => $latePercentage,
+            'totalPresent' => $totalPresent,
+            'totalAbsent' => $totalAbsent,
+            'totalLate' => $totalLate,
+            'totalDays' => $totalCount,
+            'presentAttendances' => $presentAttendances,
+            'absentAttendances' => $absentAttendances,
+            'lateAttendances' => $lateAttendances,
         ]);
     }
 
