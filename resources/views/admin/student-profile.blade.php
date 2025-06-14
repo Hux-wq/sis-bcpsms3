@@ -590,8 +590,8 @@
                             <div class="stats-icon stats-present">
                                 <i class="fas fa-check"></i>
                             </div>
-                            <div class="stats-number">95%</div>
-                            <div class="stats-label">Present</div>
+                        <div class="stats-number">{{ $presentPercentage }}%</div>
+                        <div class="stats-label">Present</div>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
@@ -599,8 +599,8 @@
                             <div class="stats-icon stats-absent">
                                 <i class="fas fa-times"></i>
                             </div>
-                            <div class="stats-number">3%</div>
-                            <div class="stats-label">Absent</div>
+                        <div class="stats-number">{{ $absentPercentage }}%</div>
+                        <div class="stats-label">Absent</div>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
@@ -608,8 +608,8 @@
                             <div class="stats-icon stats-late">
                                 <i class="fas fa-clock"></i>
                             </div>
-                            <div class="stats-number">2%</div>
-                            <div class="stats-label">Late</div>
+                        <div class="stats-number">{{ $latePercentage }}%</div>
+                        <div class="stats-label">Late</div>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
@@ -617,7 +617,7 @@
                             <div class="stats-icon stats-total">
                                 <i class="fas fa-calendar"></i>
                             </div>
-                            <div class="stats-number">100</div>
+                            <div class="stats-number">{{ $totalCount }}</div>
                             <div class="stats-label">Total Days</div>
                         </div>
                     </div>
@@ -753,165 +753,154 @@
         </div>
     </div>
 
-    <!-- Present Attendance Modals -->
-    <div class="modal fade" id="presentModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-check me-2"></i>Present Attendance</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Course Code</th>
-                                <th>Present (%)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>CS101</td><td>98%</td></tr>
-                            <tr><td>MATH101</td><td>92%</td></tr>
-                            <tr><td>ENG101</td><td>95%</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+<!-- Present Attendance Modals -->
+<div class="modal fade" id="presentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-check me-2"></i>Present Attendance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Course Code</th>
+                            <th>Present (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($presentAttendances->groupBy('subject_id') as $subjectId => $attendances)
+                        <tr>
+                            <td>{{ $attendances->first()->subject->course_code }}</td>
+                            <td>
+                                @php
+                                    $presentCount = $attendances->count();
+                                    $totalCountSubject = $absentAttendances->where('subject_id', $subjectId)->count() + $presentAttendances->where('subject_id', $subjectId)->count() + $lateAttendances->where('subject_id', $subjectId)->count();
+                                    $presentPercentageSubject = $totalCountSubject > 0 ? round(($presentCount / $totalCountSubject) * 100) : 0;
+                                @endphp
+                                {{ $presentPercentageSubject }}%
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Absent attendance Modal -->
-      <div class="modal fade" id="absentModal" tabindex="-1" aria-labelledby="absentModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-          <div class="modal-content">
+
+<!-- Absent attendance Modal -->
+<div class="modal fade" id="absentModal" tabindex="-1" aria-labelledby="absentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="absentModalLabel">Absence Breakdown by Course</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="absentModalLabel">Absence Breakdown by Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Course code</th>
-                    <th>Absent (%)</th>
-                    <th>Date(s) Absent</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach($courses as $course)
-                  <tr>
-                    <td>{{ $course->course_code }}</td>
-                    <td>
-                      @php
-                        // Dummy absence percentage for demonstration
-                        $absencePercentages = [5, 8, 4, 10];
-                        $index = $loop->index % count($absencePercentages);
-                      @endphp
-                      {{ $absencePercentages[$index] }}%
-                    </td>
-                    <td>
-                      @php
-                        // Dummy absence dates for demonstration
-                        $absenceDates = [
-                          ['2023-01-10', '2023-01-15'],
-                          ['2023-02-05'],
-                          ['2023-01-20', '2023-02-10', '2023-02-15'],
-                          ['2023-03-01']
-                        ];
-                        $dateIndex = $loop->index % count($absenceDates);
-                      @endphp
-                      {{ implode(', ', $absenceDates[$dateIndex]) }}
-                    </td>
-                  </tr>
-                  @endforeach
-                </tbody>
-              </table>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Course code</th>
+                            <th>Absent (%)</th>
+                            <th>Date(s) Absent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($absentAttendances->groupBy('subject_id') as $subjectId => $attendances)
+                        <tr>
+                            <td>{{ $attendances->first()->subject->course_code }}</td>
+                            <td>
+                                @php
+                                    $absentCount = $attendances->count();
+                                    $totalCountSubject = $absentAttendances->where('subject_id', $subjectId)->count() + $presentAttendances->where('subject_id', $subjectId)->count() + $lateAttendances->where('subject_id', $subjectId)->count();
+                                    $absencePercentageSubject = $totalCountSubject > 0 ? round(($absentCount / $totalCountSubject) * 100) : 0;
+                                @endphp
+                                {{ $absencePercentageSubject }}%
+                            </td>
+                            <td>
+                                @php
+                                    $absentDates = $attendances->pluck('attendance_date')->map(function($date) {
+                                        return \Carbon\Carbon::parse($date)->format('Y-m-d');
+                                    })->toArray();
+                                @endphp
+                                {{ implode(', ', $absentDates) }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
+</div>
+
 <!-- Late Attendance Modal -->
-      <div class="modal fade" id="lateModal" tabindex="-1" aria-labelledby="lateModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-          <div class="modal-content">
+<div class="modal fade" id="lateModal" tabindex="-1" aria-labelledby="lateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="lateModalLabel">Late Breakdown by Course</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="lateModalLabel">Late Breakdown by Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Course code</th>
-                    <th>Late (%)</th>
-                    <th>Date(s) Late</th>
-                    <th>Time(s) Late</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach($courses as $course)
-                  <tr>
-                    <td>{{ $course->course_code }}</td>
-                    <td>
-                      @php
-                        // Dummy late percentage for demonstration
-                        $latePercentages = [3, 5, 2, 4];
-                        $index = $loop->index % count($latePercentages);
-                      @endphp
-                      {{ $latePercentages[$index] }}%
-                    </td>
-                    <td>
-                      @php
-                        // Dummy late dates for demonstration
-                        $lateDates = [
-                          ['2023-01-12', '2023-01-18'],
-                          ['2023-02-07'],
-                          ['2023-01-22', '2023-02-12', '2023-02-17'],
-                          ['2023-03-03']
-                        ];
-                        $dateIndex = $loop->index % count($lateDates);
-                      @endphp
-                      {{ implode(', ', $lateDates[$dateIndex]) }}
-                    </td>
-                    <td>
-                      @php
-                        // Dummy late times for demonstration
-                        $lateTimes = [
-                          ['08:05 AM', '08:10 AM'],
-                          ['08:15 AM'],
-                          ['08:07 AM', '08:12 AM', '08:20 AM'],
-                          ['08:03 AM']
-                        ];
-                        $timeIndex = $loop->index % count($lateTimes);
-                      @endphp
-                      {{ implode(', ', $lateTimes[$timeIndex]) }}
-                    </td>
-                  </tr>
-                  @endforeach
-                </tbody>
-              </table>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Course code</th>
+                            <th>Late (%)</th>
+                            <th>Date(s) Late</th>
+                            <th>Time(s) Late</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($lateAttendances->groupBy('subject_id') as $subjectId => $attendances)
+                        <tr>
+                            <td>{{ $attendances->first()->subject->course_code }}</td>
+                            <td>
+                                @php
+                                    $lateCount = $attendances->count();
+                                    $totalCountSubject = $absentAttendances->where('subject_id', $subjectId)->count() + $presentAttendances->where('subject_id', $subjectId)->count() + $lateAttendances->where('subject_id', $subjectId)->count();
+                                    $latePercentageSubject = $totalCountSubject > 0 ? round(($lateCount / $totalCountSubject) * 100) : 0;
+                                @endphp
+                                {{ $latePercentageSubject }}%
+                            </td>
+                            <td>
+                                @php
+                                    $lateDates = $attendances->pluck('attendance_date')->map(function($date) {
+                                        return \Carbon\Carbon::parse($date)->format('Y-m-d');
+                                    })->toArray();
+                                @endphp
+                                {{ implode(', ', $lateDates) }}
+                            </td>
+                            <td>
+                                @php
+                                    $lateTimes = $attendances->pluck('check_in_time')->toArray();
+                                @endphp
+                                {{ implode(', ', $lateTimes) }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
-          </div>
         </div>
-      </div> 
+    </div>
+</div>
 
-       <!-- Total Attendance Modal -->
-                 @php
-                  $totalPresent = 95;
-                  $totalAbsent = 3;
-                  $totalLate = 2;
-                  $totalDays = $totalPresent + $totalAbsent + $totalLate;
-                @endphp
-      <!-- Total Days Modal -->
+
+<!-- Total Days Modal -->
 <div class="modal fade" id="totalDaysModal" tabindex="-1" aria-labelledby="totalDaysModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-scrollable">
         <div class="modal-content">
@@ -920,7 +909,6 @@
                     <i class="fas fa-calendar me-2"></i>
                     Attendance Summary
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row g-3">
@@ -944,7 +932,7 @@
                     </div>
                     <div class="col-6">
                         <div class="text-center p-3" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px; color: white;">
-                            <h4 class="mb-1">{{ $totalDays }}</h4>
+                            <h4 class="mb-1">{{ $totalPresent + $totalAbsent + $totalLate }}</h4>
                             <small class="opacity-75">Total Days</small>
                         </div>
                     </div>
@@ -956,6 +944,7 @@
         </div>
     </div>
 </div>
+
       
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>

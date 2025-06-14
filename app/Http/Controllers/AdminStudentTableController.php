@@ -31,47 +31,67 @@ class AdminStudentTableController extends Controller
             ->get()
             ->keyBy('course_id');
 
-        // Prepare academicPerformance data structure with all courses in 1st year
+        // Prepare academicPerformance data structure from grades
         $academicPerformance = [];
 
-        $year = 1; // Assign all courses to 1st year as per user request
+        \Log::debug('Grades:', ['grades' => $grades->toArray()]);
 
-        foreach ($courses as $course) {
-            $semesterRaw = $course->semester ?? null;
+        foreach ($grades as $grade) {
+            $course = $grade->course;
+            if ($course) {
+                // Determine year level from course level (assuming level is numeric and corresponds to year)
+                $year = (int) ($course->level / 100); // e.g., level 100 -> year 1, 200 -> year 2
+                if ($year < 1 || $year > 4) {
+                    $year = 1; // default to 1 if out of range
+                }
 
-            // Convert semester string to integer key if possible
-            $semester = null;
-            if (is_numeric($semesterRaw)) {
-                $semester = (int)$semesterRaw;
-            } else {
-                // Map common string values to integers
-                $semesterMap = [
+                // Map grading_period to semester number
+                $gradingPeriodMap = [
                     '1st Semester' => 1,
                     '2nd Semester' => 2,
-                    'First Semester' => 1,
-                    'Second Semester' => 2,
                 ];
-                $semester = $semesterMap[$semesterRaw] ?? 1; // Default to 1 if unknown
+                $semester = $gradingPeriodMap[$grade->grading_period] ?? 1;
+
+                if (!isset($academicPerformance[$year])) {
+                    $academicPerformance[$year] = [];
+                }
+                if (!isset($academicPerformance[$year][$semester])) {
+                    $academicPerformance[$year][$semester] = collect();
+                }
+
+                // Clone course to avoid modifying original relation
+                $courseWithGrade = clone $course;
+                $courseWithGrade->grade = $grade->grade;
+
+                $academicPerformance[$year][$semester]->push($courseWithGrade);
             }
-
-            if (!isset($academicPerformance[$year])) {
-                $academicPerformance[$year] = [];
-            }
-            if (!isset($academicPerformance[$year][$semester])) {
-                $academicPerformance[$year][$semester] = collect();
-            }
-
-            // Find grade for the course if exists
-            $grade = $grades->has($course->id) ? $grades->get($course->id)->grade : null;
-
-            // Clone course to avoid modifying original relation
-            $courseWithGrade = clone $course;
-            $courseWithGrade->grade = $grade;
-
-            $academicPerformance[$year][$semester]->push($courseWithGrade);
         }
+
+        // Debug dump academicPerformance
+        \Log::debug('Academic Performance Data:', ['academicPerformance' => is_array($academicPerformance) ? $academicPerformance : $academicPerformance->toArray()]);
     
-        return view('admin.student-profile', compact('student','acad_records', 'courses', 'grades', 'academicPerformance'));
+        // Fetch attendances for the student
+        $attendances = \App\Models\Attendance::with('subject')->where('student_id', $id)
+            ->orderBy('attendance_date', 'desc')
+            ->get();
+
+        $presentAttendances = $attendances->where('status', 'present');
+        $absentAttendances = $attendances->where('status', 'absent');
+        $lateAttendances = $attendances->where('status', 'late');
+
+        $totalCount = $attendances->count();
+        $totalPresent = $presentAttendances->count();
+        $totalAbsent = $absentAttendances->count();
+        $totalLate = $lateAttendances->count();
+
+        $presentPercentage = $totalCount > 0 ? round(($totalPresent / $totalCount) * 100) : 0;
+        $absentPercentage = $totalCount > 0 ? round(($totalAbsent / $totalCount) * 100) : 0;
+        $latePercentage = $totalCount > 0 ? round(($totalLate / $totalCount) * 100) : 0;
+
+        return view('admin.student-profile', compact('student','acad_records', 'courses', 'grades', 'academicPerformance',
+            'presentAttendances', 'absentAttendances', 'lateAttendances',
+            'presentPercentage', 'absentPercentage', 'latePercentage',
+            'totalPresent', 'totalAbsent', 'totalLate', 'totalCount'));
     }
 
     public function studentCreateUserAccount(Request $request)

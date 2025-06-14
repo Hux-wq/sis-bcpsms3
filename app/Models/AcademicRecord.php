@@ -27,4 +27,9 @@ class AcademicRecord extends Model
     {
         return $this->belongsTo(Student::class);
     }
+
+    public function course()
+    {
+        return $this->belongsTo(\App\Models\Course::class);
+    }
 }

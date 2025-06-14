@@ -428,8 +428,8 @@
                             <i class="fas fa-check fa-lg"></i>
                         </div>
                         <div>
-                            <h3 class="attendance-number">95%</h3>
-                            <p class="attendance-label">Present</p>
+            <h3 class="attendance-number">{{ $presentPercentage }}%</h3>
+            <p class="attendance-label">Present</p>
                         </div>
                     </div>
                 </div>
@@ -442,8 +442,8 @@
                             <i class="fas fa-times fa-lg"></i>
                         </div>
                         <div>
-                            <h3 class="attendance-number">3%</h3>
-                            <p class="attendance-label">Absent</p>
+            <h3 class="attendance-number">{{ $absentPercentage }}%</h3>
+            <p class="attendance-label">Absent</p>
                         </div>
                     </div>
                 </div>
@@ -456,8 +456,8 @@
                             <i class="fas fa-clock fa-lg"></i>
                         </div>
                         <div>
-                            <h3 class="attendance-number">2%</h3>
-                            <p class="attendance-label">Late</p>
+            <h3 class="attendance-number">{{ $latePercentage }}%</h3>
+            <p class="attendance-label">Late</p>
                         </div>
                     </div>
                 </div>
@@ -471,10 +471,10 @@
                         </div>
                         <div>
                             @php
-                                $totalPresent = 95;
-                                $totalAbsent = 3;
-                                $totalLate = 2;
-                                $totalDays = $totalPresent + $totalAbsent + $totalLate;
+                                //$totalPresent = 95;
+                                //$totalAbsent = 3;
+                                //$totalLate = 2;
+                                //$totalDays = $totalPresent + $totalAbsent + $totalLate;
                             @endphp
                             <h3 class="attendance-number">{{ $totalDays }}</h3>
                             <p class="attendance-label">Total Days</p>
@@ -596,7 +596,6 @@
     </div>
 </section>
 
-<!-- modals -->
 <!-- Make Payment Modal -->
 <div class="modal fade" id="makePaymentModal" tabindex="-1" aria-labelledby="makePaymentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -651,32 +650,22 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Course Code</th>
-                            <th>Present (%)</th>
+                            <th>Date</th>
+                            <th>Subject</th>
+                            <th>Check-In Time</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            if (!isset($courses) || $courses->count() == 0) {
-                                $courses = collect([
-                                    (object)['course_code' => 'CS101', 'title' => 'Introduction to Computer Science'],
-                                    (object)['course_code' => 'MATH101', 'title' => 'Calculus I'],
-                                    (object)['course_code' => 'ENG101', 'title' => 'English Composition'],
-                                    (object)['course_code' => 'HIST101', 'title' => 'World History']
-                                ]);
-                            }
-                            $attendancePercentages = [98, 92, 95, 90];
-                        @endphp
-                        @foreach($courses as $course)
-                        <tr>
-                            <td><strong>{{ $course->course_code }}</strong></td>
-                            <td>
-                                @php
-                                    $index = $loop->index % count($attendancePercentages);
-                                @endphp
-                                <span class="grade-badge">{{ $attendancePercentages[$index] }}%</span>
-                            </td>
-                        </tr>
+                        @foreach ($presentAttendances as $attendance)
+                            <tr>
+                                <td>{{ \Carbon\Carbon::parse($attendance->attendance_date)->format('M d, Y') }}</td>
+                                <td>{{ $attendance->subject->title }}</td>
+                                <td>{{ $attendance->check_in_time ?? '—' }}</td>
+                                <td class="font-semibold text-green-600">
+                                    Present
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -710,29 +699,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $absencePercentages = [5, 8, 4, 10];
-                            $absenceDates = [
-                                ['2023-01-10', '2023-01-15'],
-                                ['2023-02-05'],
-                                ['2023-01-20', '2023-02-10', '2023-02-15'],
-                                ['2023-03-01']
-                            ];
-                        @endphp
-                        @foreach($courses as $course)
+                        @foreach ($absentAttendances->groupBy('subject_id') as $subjectId => $attendances)
                         <tr>
-                            <td><strong>{{ $course->course_code }}</strong></td>
+                            <td><strong>{{ $attendances->first()->subject->course_code }}</strong></td>
                             <td>
                                 @php
-                                    $index = $loop->index % count($absencePercentages);
+                                    $absentCount = $attendances->count();
+                                    $totalCount = $absentAttendances->where('subject_id', $subjectId)->count() + $presentAttendances->where('subject_id', $subjectId)->count() + $lateAttendances->where('subject_id', $subjectId)->count();
+                                    $absencePercentage = $totalCount > 0 ? round(($absentCount / $totalCount) * 100) : 0;
                                 @endphp
-                                <span class="grade-badge failed">{{ $absencePercentages[$index] }}%</span>
+                                <span class="grade-badge failed">{{ $absencePercentage }}%</span>
                             </td>
                             <td>
                                 @php
-                                    $dateIndex = $loop->index % count($absenceDates);
+                                    $absentDates = $attendances->pluck('attendance_date')->map(function($date) {
+                                        return \Carbon\Carbon::parse($date)->format('Y-m-d');
+                                    })->toArray();
                                 @endphp
-                                {{ implode(', ', $absenceDates[$dateIndex]) }}
+                                {{ implode(', ', $absentDates) }}
                             </td>
                         </tr>
                         @endforeach
@@ -768,41 +752,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $latePercentages = [3, 5, 2, 4];
-                            $lateDates = [
-                                ['2023-01-12', '2023-01-18'],
-                                ['2023-02-07'],
-                                ['2023-01-22', '2023-02-12', '2023-02-17'],
-                                ['2023-03-03']
-                            ];
-                            $lateTimes = [
-                                ['08:05 AM', '08:10 AM'],
-                                ['08:15 AM'],
-                                ['08:07 AM', '08:12 AM', '08:20 AM'],
-                                ['08:03 AM']
-                            ];
-                        @endphp
-                        @foreach($courses as $course)
+                        @foreach ($lateAttendances->groupBy('subject_id') as $subjectId => $attendances)
                         <tr>
-                            <td><strong>{{ $course->course_code }}</strong></td>
+                            <td><strong>{{ $attendances->first()->subject->course_code }}</strong></td>
                             <td>
                                 @php
-                                    $index = $loop->index % count($latePercentages);
+                                    $lateCount = $attendances->count();
+                                    $totalCount = $absentAttendances->where('subject_id', $subjectId)->count() + $presentAttendances->where('subject_id', $subjectId)->count() + $lateAttendances->where('subject_id', $subjectId)->count();
+                                    $latePercentage = $totalCount > 0 ? round(($lateCount / $totalCount) * 100) : 0;
                                 @endphp
-                                <span class="grade-badge" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">{{ $latePercentages[$index] }}%</span>
+                                <span class="grade-badge" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">{{ $latePercentage }}%</span>
                             </td>
                             <td>
                                 @php
-                                    $dateIndex = $loop->index % count($lateDates);
+                                    $lateDates = $attendances->pluck('attendance_date')->map(function($date) {
+                                        return \Carbon\Carbon::parse($date)->format('Y-m-d');
+                                    })->toArray();
                                 @endphp
-                                {{ implode(', ', $lateDates[$dateIndex]) }}
+                                {{ implode(', ', $lateDates) }}
                             </td>
                             <td>
                                 @php
-                                    $timeIndex = $loop->index % count($lateTimes);
+                                    $lateTimes = $attendances->pluck('check_in_time')->toArray();
                                 @endphp
-                                {{ implode(', ', $lateTimes[$timeIndex]) }}
+                                {{ implode(', ', $lateTimes) }}
                             </td>
                         </tr>
                         @endforeach
@@ -825,7 +798,6 @@
                     <i class="fas fa-calendar me-2"></i>
                     Attendance Summary
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row g-3">
@@ -849,7 +821,7 @@
                     </div>
                     <div class="col-6">
                         <div class="text-center p-3" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px; color: white;">
-                            <h4 class="mb-1">{{ $totalDays }}</h4>
+                            <h4 class="mb-1">{{ $totalPresent + $totalAbsent + $totalLate }}</h4>
                             <small class="opacity-75">Total Days</small>
                         </div>
                     </div>
