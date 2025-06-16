@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Student;
@@ -23,7 +24,7 @@ class AdminDashboardController extends Controller
         $coursesCount = Course::count();
         $courses = Course::get(['course_code', 'title', 'credits', 'description']);
         $programsCount = Program::count();
-        $programs = Program::get(['code', 'name']);
+$programs = Program::get(['id', 'code', 'name']);
         $sections = Section::count();
         $departmentsCount = Department::count();
         $departments = Department::get(['code', 'name',]);
@@ -136,6 +137,9 @@ class AdminDashboardController extends Controller
             ->whereIn('enrollment_status', ['Graduated', 'Failed', 'Dropped Out'])
             ->get(['id', 'student_number', 'program_id', 'first_name', 'middle_name', 'last_name', 'suffix_name', 'age', 'gender', 'birthdate', 'religion', 'place_of_birth', 'current_address', 'email_address', 'contact_number', 'enrollment_status', 'created_at', 'updated_at']);
 
+        $predictiveAnalyticsService = new \App\Services\PredictiveAnalyticsService();
+        $predictionCounts = $predictiveAnalyticsService->predictStudentCounts();
+
         return view('admin.dashboard',[
             'student_enrolled_count' => $studentsCount,
             'students' => $students,
@@ -151,6 +155,21 @@ class AdminDashboardController extends Controller
             'recentEnrolledStudents' => $recentEnrolledStudents,
             'statusPerYear' => $dummyStatusData,
             'statusPerYearGFDO' => $dummyStatusDataGFDO,
+            'predictionCounts' => $predictionCounts,
         ]);
+    }
+
+    public function predictiveAnalyticsData()
+    {
+        $service = new \App\Services\PredictiveAnalyticsService();
+
+        $detailedBreakdown = $service->getDetailedStudentBreakdown();
+
+        return response()->json($detailedBreakdown);
+    }
+
+    public function predictiveAnalyticsBreakdown()
+    {
+        return view('admin.predictive-analytics-breakdown');
     }
 }

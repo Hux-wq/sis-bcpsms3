@@ -146,13 +146,26 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Predictive Analytics Chart -->
+                    <div class="col-xxl-6 col-md-12">
+                        <a href="/predictive-analytics/breakdown" class="block">
+                            <div class="card chart-card hover:shadow-lg transition-shadow duration-300">
+                                <div class="card-body">
+                                    <h5 class="chart-title">Predictive Analytics: Grade Category (Click to view breakdown)</h5>
+                                    <div class="chart-container cursor-pointer">
+                                        <canvas id="predictiveAnalyticsChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -186,323 +199,280 @@
     gfdoCard.addEventListener('click', function () {
       gfdoStudentsModal.show();
     });
-  });
-  
-</script>
 
-<script>
-  // Prepare data for pie chart
-  const students = @json($students);
-  const programCounts = {};
-
-  students.forEach(student => {
-    const programName = student.program ? student.program.name : 'Unknown';
-    if (programCounts[programName]) {
-      programCounts[programName]++;
-    } else {
-      programCounts[programName] = 1;
-    }
-  });
-
-  const labels = Object.keys(programCounts);
-  const data = Object.values(programCounts);
-
-  const ctx = document.getElementById('studentsProgramPieChart').getContext('2d');
-
-  // Generate distinct colors for each program dynamically
-  function generateColors(numColors) {
-    const colors = [];
-    const hueStep = Math.floor(360 / numColors);
-    for (let i = 0; i < numColors; i++) {
-      const hue = i * hueStep;
-      colors.push(`hsl(${hue}, 70%, 60%)`);
-    }
-    return colors;
-  }
-
-  const backgroundColors = generateColors(labels.length);
-
-  const studentsProgramPieChart = new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Students per Program',
-        data: data,
-        backgroundColor: backgroundColors,
-        borderColor: 'rgba(255, 255, 255, 0.8)',
-        borderWidth: 2,
-        hoverOffset: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: {
-            font: {
-              family: "'Poppins', sans-serif",
-              size: 12
-            },
-            padding: 20,
-            usePointStyle: true,
-            pointStyle: 'circle'
-          }
-        },
-        tooltip: {
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          titleColor: '#333',
-          bodyColor: '#333',
-          bodyFont: {
-            family: "'Poppins', sans-serif",
-            size: 13
-          },
-          titleFont: {
-            family: "'Poppins', sans-serif",
-            size: 14,
-            weight: 'bold'
-          },
-          borderColor: '#ddd',
-          borderWidth: 1,
-          padding: 12,
-          boxPadding: 6,
-          usePointStyle: true
-        }
-      }
-    }
-  });
-
-
-  // Grouped Bar Chart for Enrolled, Transferee, Returnee, Octoberian students per year
-  const statusPerYearData = @json($statusPerYear);
-  const statusLabels = Object.keys(statusPerYearData['Enrolled']);
-  const enrolledData = Object.values(statusPerYearData['Enrolled']);
-  const transfereeData = Object.values(statusPerYearData['Transferee']);
-  const returneeData = Object.values(statusPerYearData['Returnee']);
-  const octoberianData = Object.values(statusPerYearData['Octoberian']);
-
-  const statusCtx = document.getElementById('statusComparisonBarChart').getContext('2d');
-  const statusComparisonBarChart = new Chart(statusCtx, {
-    type: 'bar',
-    data: {
-      labels: statusLabels,
-      datasets: [
-        {
-          label: 'Enrolled',
-          data: enrolledData,
-          backgroundColor: 'rgba(63, 81, 181, 0.75)', // indigo
-          borderColor: 'rgba(63, 81, 181, 1)',
-          borderWidth: 2,
-          borderRadius: 4,
-          hoverBackgroundColor: 'rgba(63, 81, 181, 0.9)',
-        },
-        {
-          label: 'Transferee',
-          data: transfereeData,
-          backgroundColor: 'rgba(0, 150, 136, 0.75)', // teal
-          borderColor: 'rgba(0, 150, 136, 1)',
-          borderWidth: 2,
-          borderRadius: 4,
-          hoverBackgroundColor: 'rgba(0, 150, 136, 0.9)',
-        },
-        {
-          label: 'Returnee',
-          data: returneeData,
-          backgroundColor: 'rgba(255, 152, 0, 0.75)', // orange
-          borderColor: 'rgba(255, 152, 0, 1)',
-          borderWidth: 2,
-          borderRadius: 4,
-          hoverBackgroundColor: 'rgba(255, 152, 0, 0.9)',
-        },
-        {
-          label: 'Octoberian',
-          data: octoberianData,
-          backgroundColor: 'rgba(156, 39, 176, 0.75)', // purple
-          borderColor: 'rgba(156, 39, 176, 1)',
-          borderWidth: 2,
-          borderRadius: 4,
-          hoverBackgroundColor: 'rgba(156, 39, 176, 0.9)',
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            font: {
-              family: "'Poppins', sans-serif",
-              size: 12
-            },
-            usePointStyle: true,
-            padding: 20
-          }
-        },
-        tooltip: {
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          titleColor: '#333',
-          bodyColor: '#333',
-          bodyFont: {
-            family: "'Poppins', sans-serif",
-            size: 13
-          },
-          titleFont: {
-            family: "'Poppins', sans-serif",
-            size: 14,
-            weight: 'bold'
-          },
-          borderColor: '#ddd',
-          borderWidth: 1,
-          padding: 12
-        }
+    // Students per Program Pie Chart
+    const studentsProgramCtx = document.getElementById('studentsProgramPieChart').getContext('2d');
+    const programLabels = @json($programs->pluck('name'));
+    const studentsPerProgram = @json($programs->map(function($program) use ($students) {
+      return $students->where('program_id', $program->id)->count();
+    }));
+    new Chart(studentsProgramCtx, {
+      type: 'pie',
+      data: {
+        labels: programLabels,
+        datasets: [{
+          label: 'Students per Program',
+          data: studentsPerProgram,
+          backgroundColor: [
+            '#4a90e2', '#009688', '#e91e63', '#ff5722', '#ff9800', '#26a69a', '#357ABD', '#f57c00'
+          ],
+          borderColor: '#fff',
+          borderWidth: 1
+        }]
       },
-      scales: {
-        x: {
-          grid: {
-            display: false
-          },
-          ticks: {
-            font: {
-              family: "'Poppins', sans-serif",
-              size: 12
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              font: {
+                family: "'Poppins', sans-serif",
+                size: 14
+              },
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle'
             }
-          }
-        },
-        y: {
-          beginAtZero: true,
-          precision: 0,
-          grid: {
-            color: 'rgba(0, 0, 0, 0.05)'
           },
-          ticks: {
-            font: {
+          tooltip: {
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            titleColor: '#333',
+            bodyColor: '#333',
+            bodyFont: {
               family: "'Poppins', sans-serif",
-              size: 12
-            }
-          }
-        }
-      }
-    }
-  });
-
-  //  Line Chart for Graduated, Failed, Dropped Out students per year
-  const statusPerYearDataGFDO = @json($statusPerYearGFDO);
-  const statusLabelsGFDO = Object.keys(statusPerYearDataGFDO['Graduated']);
-  const graduatedData = Object.values(statusPerYearDataGFDO['Graduated']);
-  const failedData = Object.values(statusPerYearDataGFDO['Failed']);
-  const droppedOutData = Object.values(statusPerYearDataGFDO['Dropped Out']);
-
-  const statusCtxGFDO = document.getElementById('statusComparisonBarChartGFDO').getContext('2d');
-  const statusComparisonBarChartGFDO = new Chart(statusCtxGFDO, {
-    type: 'line',
-    data: {
-      labels: statusLabelsGFDO,
-      datasets: [
-        {
-          label: 'Graduated',
-          data: graduatedData,
-          borderColor: 'rgba(76, 175, 80, 1)', // green
-          backgroundColor: 'rgba(76, 175, 80, 0.15)',
-          fill: true,
-          tension: 0.4,
-          pointStyle: 'circle',
-          pointRadius: 6,
-          pointHoverRadius: 8,
-          borderWidth: 3,
-          pointBackgroundColor: 'rgba(76, 175, 80, 1)',
-        },
-        {
-          label: 'Failed',
-          data: failedData,
-          borderColor: 'rgba(244, 67, 54, 1)', // red
-          backgroundColor: 'rgba(244, 67, 54, 0.15)',
-          fill: true,
-          tension: 0.4,
-          pointStyle: 'rectRot',
-          pointRadius: 6,
-          pointHoverRadius: 8,
-          borderWidth: 3,
-          pointBackgroundColor: 'rgba(244, 67, 54, 1)',
-        },
-        {
-          label: 'Dropped Out',
-          data: droppedOutData,
-          borderColor: 'rgba(255, 152, 0, 1)', // orange
-          backgroundColor: 'rgba(255, 152, 0, 0.15)',
-          fill: true,
-          tension: 0.4,
-          pointStyle: 'triangle',
-          pointRadius: 6,
-          pointHoverRadius: 8,
-          borderWidth: 3,
-          pointBackgroundColor: 'rgba(255, 152, 0, 1)',
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            font: {
-              family: "'Poppins', sans-serif",
-              size: 12
+              size: 13
             },
-            usePointStyle: true,
-            padding: 20
-          }
-        },
-        tooltip: {
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          titleColor: '#333',
-          bodyColor: '#333',
-          bodyFont: {
-            family: "'Poppins', sans-serif",
-            size: 13
-          },
-          titleFont: {
-            family: "'Poppins', sans-serif",
-            size: 14,
-            weight: 'bold'
-          },
-          borderColor: '#ddd',
-          borderWidth: 1,
-          padding: 12
-        }
-      },
-      scales: {
-        x: {
-          grid: {
-            display: false
-          },
-          ticks: {
-            font: {
+            titleFont: {
               family: "'Poppins', sans-serif",
-              size: 12
-            }
-          }
-        },
-        y: {
-          beginAtZero: true,
-          precision: 0,
-          grid: {
-            color: 'rgba(0, 0, 0, 0.05)'
-          },
-          ticks: {
-            font: {
-              family: "'Poppins', sans-serif",
-              size: 12
-            }
+              size: 14,
+              weight: 'bold'
+            },
+            borderColor: '#ddd',
+            borderWidth: 1,
+            padding: 12
           }
         }
       }
-    }
+    });
+
+    // Yearly Student Status Bar Chart
+    const yearlyStatusCtx = document.getElementById('statusComparisonBarChart').getContext('2d');
+    const years = Object.keys(@json($statusPerYear['Enrolled']));
+    const enrolledData = Object.values(@json($statusPerYear['Enrolled']));
+    const transfereeData = Object.values(@json($statusPerYear['Transferee']));
+    const returneeData = Object.values(@json($statusPerYear['Returnee']));
+    const octoberianData = Object.values(@json($statusPerYear['Octoberian']));
+    new Chart(yearlyStatusCtx, {
+      type: 'bar',
+      data: {
+        labels: years,
+        datasets: [
+          {
+            label: 'Enrolled',
+            data: enrolledData,
+            backgroundColor: 'rgba(74, 144, 226, 0.7)'
+          },
+          {
+            label: 'Transferee',
+            data: transfereeData,
+            backgroundColor: 'rgba(0, 150, 136, 0.7)'
+          },
+          {
+            label: 'Returnee',
+            data: returneeData,
+            backgroundColor: 'rgba(233, 30, 99, 0.7)'
+          },
+          {
+            label: 'Octoberian',
+            data: octoberianData,
+            backgroundColor: 'rgba(255, 87, 34, 0.7)'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 5
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              font: {
+                family: "'Poppins', sans-serif",
+                size: 14
+              },
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            titleColor: '#333',
+            bodyColor: '#333',
+            bodyFont: {
+              family: "'Poppins', sans-serif",
+              size: 13
+            },
+            titleFont: {
+              family: "'Poppins', sans-serif",
+              size: 14,
+              weight: 'bold'
+            },
+            borderColor: '#ddd',
+            borderWidth: 1,
+            padding: 12
+          }
+        }
+      }
+    });
+
+    // Annual Student Outcome Trends Bar Chart
+    const annualOutcomeCtx = document.getElementById('statusComparisonBarChartGFDO').getContext('2d');
+    const yearsGFDO = Object.keys(@json($statusPerYearGFDO['Graduated']));
+    const graduatedData = Object.values(@json($statusPerYearGFDO['Graduated']));
+    const failedData = Object.values(@json($statusPerYearGFDO['Failed']));
+    const droppedData = Object.values(@json($statusPerYearGFDO['Dropped Out']));
+    new Chart(annualOutcomeCtx, {
+      type: 'bar',
+      data: {
+        labels: yearsGFDO,
+        datasets: [
+          {
+            label: 'Graduated',
+            data: graduatedData,
+            backgroundColor: 'rgba(56, 142, 60, 0.7)'
+          },
+          {
+            label: 'Failed',
+            data: failedData,
+            backgroundColor: 'rgba(211, 47, 47, 0.7)'
+          },
+          {
+            label: 'Dropped Out',
+            data: droppedData,
+            backgroundColor: 'rgba(245, 124, 0, 0.7)'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 5
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              font: {
+                family: "'Poppins', sans-serif",
+                size: 14
+              },
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            titleColor: '#333',
+            bodyColor: '#333',
+            bodyFont: {
+              family: "'Poppins', sans-serif",
+              size: 13
+            },
+            titleFont: {
+              family: "'Poppins', sans-serif",
+              size: 14,
+              weight: 'bold'
+            },
+            borderColor: '#ddd',
+            borderWidth: 1,
+            padding: 12
+          }
+        }
+      }
+    });
+
+    // Use server-passed predictive analytics data and render chart
+    const predictionCounts = @json($predictionCounts);
+
+    const ctxPredictive = document.getElementById('predictiveAnalyticsChart').getContext('2d');
+    new Chart(ctxPredictive, {
+      type: 'doughnut',
+      data: {
+        labels: ['Pass', 'At Risk', 'Fail'],
+        datasets: [{
+          label: 'Predicted Grade Category',
+          data: [
+            predictionCounts['Pass'] || 0,
+            predictionCounts['At Risk'] || 0,
+            predictionCounts['Fail'] || 0
+          ],
+          backgroundColor: [
+            'rgba(76, 175, 80, 0.7)', // green
+            'rgba(255, 193, 7, 0.7)', // amber for at risk
+            'rgba(244, 67, 54, 0.7)'  // red
+          ],
+          borderColor: [
+            'rgba(76, 175, 80, 1)',
+            'rgba(255, 193, 7, 1)',
+            'rgba(244, 67, 54, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              font: {
+                family: "'Poppins', sans-serif",
+                size: 14
+              },
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            titleColor: '#333',
+            bodyColor: '#333',
+            bodyFont: {
+              family: "'Poppins', sans-serif",
+              size: 13
+            },
+            titleFont: {
+              family: "'Poppins', sans-serif",
+              size: 14,
+              weight: 'bold'
+            },
+            borderColor: '#ddd',
+            borderWidth: 1,
+            padding: 12
+          }
+        }
+      }
+    });
   });
 </script>
 

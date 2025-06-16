@@ -6,9 +6,16 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\User;
 use App\Models\AcademicRecord;
+use App\Services\PredictiveAnalyticsService;
 
 class AdminStudentTableController extends Controller
 {
+    protected $predictiveAnalyticsService;
+
+    public function __construct(PredictiveAnalyticsService $predictiveAnalyticsService)
+    {
+        $this->predictiveAnalyticsService = $predictiveAnalyticsService;
+    }
     
     public function index()
     {
@@ -163,4 +170,36 @@ class AdminStudentTableController extends Controller
         return view('admin.failed', compact('students'));
     }
 
+    // New method to get predictive analytics data
+    public function predictiveAnalytics()
+    {
+        // Train the model
+        $this->predictiveAnalyticsService->trainModel();
+
+        // Example: Predict grade category for all enrolled students based on last grade
+        $students = Student::where('enrollment_status', 'Enrolled')->get();
+
+        $predictions = [];
+
+        foreach ($students as $student) {
+            // Get last grade for the student
+            $lastGrade = \App\Models\Grade::where('student_id', $student->id)
+                ->orderBy('created_at', 'desc')
+                ->value('grade');
+
+            if ($lastGrade === null) {
+                continue;
+            }
+
+            $predictedCategory = $this->predictiveAnalyticsService->predictGradeCategory($student->id, $lastGrade);
+
+            $predictions[] = [
+                'student_id' => $student->id,
+                'student_name' => $student->first_name . ' ' . $student->last_name,
+                'predicted_category' => $predictedCategory,
+            ];
+        }
+
+        return response()->json($predictions);
+    }
 }

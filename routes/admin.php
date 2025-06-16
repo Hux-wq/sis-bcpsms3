@@ -16,6 +16,9 @@ use App\Models\Student;
 
 Route::get('/dashboard', [AdminDashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('admin.dashboard');
 
+Route::get('/predictive-analytics', [\App\Http\Controllers\AdminDashboardController::class, 'predictiveAnalyticsData'])->middleware(['auth', 'verified']);
+Route::get('/predictive-analytics/breakdown', [\App\Http\Controllers\AdminDashboardController::class, 'predictiveAnalyticsBreakdown'])->middleware(['auth', 'verified']);
+
 Route::get('/enrollees', [AdminPendingEnrolleesController::class, 'index'])->middleware(['auth', 'verified'])->name('admin.pending-enrollees');
 
 Route::post('/enrollees', [AdminPendingEnrolleesController::class, 'store'])->middleware(['auth', 'verified'])->name('accept-enrollee');
