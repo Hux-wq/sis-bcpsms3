@@ -160,6 +160,13 @@
                                 </div>
                             </a>
                         </li>
+      
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.section-teacher-assignment.index') }}">
+                            <i class="bi bi-person-badge"></i>
+                            <span>Assign Sections to Teachers</span>
+                            </a>
+                        </li>
                     </div>
                 @endif
             @endif

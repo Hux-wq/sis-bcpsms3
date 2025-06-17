@@ -15,4 +15,9 @@ class Section extends Model
     {
         return $this->hasMany(Student::class, 'program_id', 'id');
     }
+
+    public function adviserUser()
+    {
+        return $this->belongsTo(User::class, 'adviser');
+    }
 }
