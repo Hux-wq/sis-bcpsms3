@@ -42,6 +42,56 @@
             </div>
         @endif
 
+        <!-- Filter and Search Controls -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ route('admin.section-teacher-assignment.index') }}" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="search" class="form-label fw-semibold">
+                            <i class="fas fa-search text-primary me-2"></i>Search Sections
+                        </label>
+                        <input type="text" class="form-control" id="search" name="search" 
+                               value="{{ request('search') }}" placeholder="Search by section name...">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="adviser_filter" class="form-label fw-semibold">
+                            <i class="fas fa-filter text-primary me-2"></i>Filter by Status
+                        </label>
+                        <select name="adviser_filter" id="adviser_filter" class="form-select">
+                            <option value="">All Sections</option>
+                            <option value="assigned" {{ request('adviser_filter') == 'assigned' ? 'selected' : '' }}>
+                                Assigned Only
+                            </option>
+                            <option value="unassigned" {{ request('adviser_filter') == 'unassigned' ? 'selected' : '' }}>
+                                Unassigned Only
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="per_page" class="form-label fw-semibold">
+                            <i class="fas fa-list-ol text-primary me-2"></i>Per Page
+                        </label>
+                        <select name="per_page" id="per_page" class="form-select">
+                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                            <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
+                            <option value="50" {{ request('per_page', 10) == 50 ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ request('per_page', 10) == 100 ? 'selected' : '' }}>100</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-fill">
+                                <i class="fas fa-search me-2"></i>Filter
+                            </button>
+                            <a href="{{ route('admin.section-teacher-assignment.index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-undo me-2"></i>Reset
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Main Content Card -->
         <div class="card shadow-lg border-0">
             <!-- Card Header -->
@@ -54,16 +104,27 @@
                         <small class="opacity-75">Manage teacher assignments for each section</small>
                     </div>
                     <div class="col-auto">
-                        <span class="badge bg-light text-primary fs-6">
-                            {{ $sections->count() }} Section{{ $sections->count() !== 1 ? 's' : '' }}
-                        </span>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge bg-light text-primary fs-6">
+                                @if(method_exists($sections, 'total'))
+                                    {{ $sections->total() }} Total Section{{ $sections->total() !== 1 ? 's' : '' }}
+                                @else
+                                    {{ $sections->count() }} Section{{ $sections->count() !== 1 ? 's' : '' }}
+                                @endif
+                            </span>
+                            @if(method_exists($sections, 'hasPages') && $sections->hasPages())
+                                <span class="badge bg-white bg-opacity-25 fs-6">
+                                    Page {{ $sections->currentPage() }} of {{ $sections->lastPage() }}
+                                </span>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Card Body -->
             <div class="card-body p-0">
-                @if($sections->isNotEmpty())
+                @if($sections->count() > 0)
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
@@ -167,16 +228,50 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Pagination -->
+                    @if(method_exists($sections, 'hasPages') && $sections->hasPages())
+                        <div class="card-footer bg-light border-0">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center text-muted">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <span>
+                                            Showing {{ $sections->firstItem() }} to {{ $sections->lastItem() }} 
+                                            of {{ $sections->total() }} results
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex justify-content-end">
+                                        {{ $sections->appends(request()->query())->links('pagination::bootstrap-4') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 @else
                     <div class="text-center py-5">
                         <div class="mb-4">
-                            <i class="fas fa-folder-open text-muted" style="font-size: 4rem;"></i>
+                            @if(request()->filled('search') || request()->filled('adviser_filter'))
+                                <i class="fas fa-search text-muted" style="font-size: 4rem;"></i>
+                            @else
+                                <i class="fas fa-folder-open text-muted" style="font-size: 4rem;"></i>
+                            @endif
                         </div>
-                        <h4 class="text-muted mb-2">No Sections Found</h4>
-                        <p class="text-muted">Get started by creating a new section.</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Add New Section
-                        </button>
+                        @if(request()->filled('search') || request()->filled('adviser_filter'))
+                            <h4 class="text-muted mb-2">No Matching Sections Found</h4>
+                            <p class="text-muted mb-3">Try adjusting your search criteria or filters.</p>
+                            <a href="{{ route('admin.section-teacher-assignment.index') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-undo me-2"></i>Clear Filters
+                            </a>
+                        @else
+                            <h4 class="text-muted mb-2">No Sections Found</h4>
+                            <p class="text-muted">Get started by creating a new section.</p>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Add New Section
+                            </button>
+                        @endif
                     </div>
                 @endif
             </div>
@@ -184,36 +279,57 @@
 
         <!-- Statistics Cards -->
         <div class="row mt-4">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body text-center">
                         <div class="rounded-circle bg-primary bg-gradient d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
                             <i class="fas fa-users text-white fs-4"></i>
                         </div>
                         <h5 class="card-title">Total Sections</h5>
-                        <h3 class="text-primary mb-0">{{ $sections->count() }}</h3>
+                        <h3 class="text-primary mb-0">
+                            @if(isset($totalSections))
+                                {{ $totalSections }}
+                            @elseif(method_exists($sections, 'total'))
+                                {{ $sections->total() }}
+                            @else
+                                {{ $sections->count() }}
+                            @endif
+                        </h3>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body text-center">
                         <div class="rounded-circle bg-success bg-gradient d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
                             <i class="fas fa-check-circle text-white fs-4"></i>
                         </div>
                         <h5 class="card-title">Assigned Sections</h5>
-                        <h3 class="text-success mb-0">{{ $sections->whereNotNull('adviser')->count() }}</h3>
+                        <h3 class="text-success mb-0">{{ $assignedCount ?? 0 }}</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body text-center">
                         <div class="rounded-circle bg-warning bg-gradient d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
                             <i class="fas fa-exclamation-triangle text-white fs-4"></i>
                         </div>
                         <h5 class="card-title">Unassigned Sections</h5>
-                        <h3 class="text-warning mb-0">{{ $sections->whereNull('adviser')->count() }}</h3>
+                        <h3 class="text-warning mb-0">{{ $unassignedCount ?? 0 }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="rounded-circle bg-info bg-gradient d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-percentage text-white fs-4"></i>
+                        </div>
+                        <h5 class="card-title">Assignment Rate</h5>
+                        <h3 class="text-info mb-0">
+                            {{ $totalSections > 0 ? round(($assignedCount / $totalSections) * 100) : 0 }}%
+                        </h3>
                     </div>
                 </div>
             </div>
@@ -234,6 +350,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Auto-submit form on per_page change
+    document.getElementById('per_page').addEventListener('change', function() {
+        this.closest('form').submit();
     });
 
     // SweetAlert for success messages - Enhanced version
@@ -353,6 +474,22 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = 'translateX(0)';
         });
     });
+
+    // Keyboard navigation for pagination
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey || e.metaKey) {
+            const prevLink = document.querySelector('.pagination .page-link[rel="prev"]');
+            const nextLink = document.querySelector('.pagination .page-link[rel="next"]');
+            
+            if (e.key === 'ArrowLeft' && prevLink) {
+                e.preventDefault();
+                prevLink.click();
+            } else if (e.key === 'ArrowRight' && nextLink) {
+                e.preventDefault();
+                nextLink.click();
+            }
+        }
+    });
 });
 </script>
 
@@ -397,6 +534,53 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .animate__faster {
     animation-duration: 0.5s;
+}
+
+/* Pagination Styles */
+.pagination {
+    margin-bottom: 0;
+}
+
+.page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.page-link:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+    color: #495057;
+    transform: translateY(-1px);
+}
+
+.page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+}
+
+.page-item.disabled .page-link {
+    color: #adb5bd;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+/* Enhanced Filter Card */
+.card-body form .form-label {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
 }
 
 /* SweetAlert Custom Styles */
@@ -458,6 +642,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .loading {
     animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-footer .row {
+        text-align: center;
+    }
+    
+    .card-footer .col-md-6:first-child {
+        margin-bottom: 1rem;
+    }
+    
+    .pagination {
+        justify-content: center;
+    }
 }
 </style>
 </x-app-layout>

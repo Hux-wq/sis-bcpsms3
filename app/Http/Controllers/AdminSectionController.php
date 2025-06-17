@@ -11,13 +11,19 @@ class AdminSectionController extends Controller
     // Show the form to assign teachers to sections
     public function index()
     {
-        // Get all sections with their current adviser loaded
-        $sections = Section::with('adviserUser')->get();
+        // Paginate sections with their current adviser loaded
+        $perPage = request()->input('per_page', 10);
+        $sections = Section::with('adviserUser')->paginate($perPage);
 
         // Get all users with acc_type 'teacher'
         $teachers = User::where('acc_type', 'teacher')->get();
 
-        return view('admin.section-teacher-assignment', compact('sections', 'teachers'));
+        // Calculate total sections, assigned and unassigned counts
+        $totalSections = Section::count();
+        $assignedCount = Section::whereNotNull('adviser')->count();
+        $unassignedCount = Section::whereNull('adviser')->count();
+
+        return view('admin.section-teacher-assignment', compact('sections', 'teachers', 'totalSections', 'assignedCount', 'unassignedCount'));
     }
 
     // Update the adviser for a section
