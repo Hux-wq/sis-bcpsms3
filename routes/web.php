@@ -4,10 +4,17 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UploadDocumentController;
 use App\Http\Controllers\AdminRequestController;
+use App\Http\Controllers\AdminSectionController;
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/requests/{id}/approve', [AdminRequestController::class, 'approve'])->name('admin.requests.approve');
     Route::post('/admin/requests/{id}/decline', [AdminRequestController::class, 'decline'])->name('admin.requests.decline');
+
+    // Section-Teacher assignment routes
+    Route::prefix('admin/section-teacher-assignment')->name('admin.section-teacher-assignment.')->group(function () {
+        Route::get('/', [AdminSectionController::class, 'index'])->name('index');
+        Route::post('/{id}', [AdminSectionController::class, 'update'])->name('update');
+    });
 });
 
 /*
@@ -55,4 +62,3 @@ require __DIR__.'/export.php';
 Route::delete('/files/{id}', [UploadDocumentController::class, 'destroy'])->name('files.destroy');
 
 require __DIR__.'/teacher.php';
-
