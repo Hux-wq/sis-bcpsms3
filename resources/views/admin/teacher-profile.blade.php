@@ -54,7 +54,7 @@
                                 <i class="bi bi-diagram-3-fill text-warning me-3 fs-5"></i>
                                 <div>
                                     <small class="text-muted d-block">Total Sections</small>
-                                    <span class="fw-medium fs-5 text-primary">{{ $academicRecords->count() }}</span>
+                                <span class="fw-medium fs-5 text-primary">{{ $sections->count() }}</span>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +77,7 @@
                         <h3 class="h5 mb-0">
                             <i class="bi bi-grid-3x3-gap-fill me-2"></i>Sections Handled
                         </h3>
-                        <span class="badge bg-light text-dark">{{ $academicRecords->count() }} Section(s)</span>
+                        <span class="badge bg-light text-dark">{{ $sections->count() }} Section(s)</span>
                     </div>
                 </div>
                 
@@ -220,7 +220,7 @@
                             <div class="row align-items-center">
                                 <div class="col-md-6 mb-3 mb-md-0">
                                     <div class="d-flex align-items-center text-muted">
-                                        <span id="showingText">Showing 1 to 10 of {{ $academicRecords->count() }} sections</span>
+                                        <span id="showingText">Showing 1 to 10 of {{ $sections->count() }} sections</span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -260,7 +260,7 @@
                                 <div class="col-md-4">
                                     <div class="stats-card text-center p-3 bg-white rounded-3 shadow-sm">
                                         <i class="bi bi-diagram-3 text-warning fs-3"></i>
-                                        <h4 class="mt-2 mb-1 text-warning">{{ $academicRecords->count() }}</h4>
+                                        <h4 class="mt-2 mb-1 text-warning">{{ $sections->count() }}</h4>
                                         <small class="text-muted">Total Sections</small>
                                     </div>
                                 </div>

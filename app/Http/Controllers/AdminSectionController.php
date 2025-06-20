@@ -11,17 +11,33 @@ class AdminSectionController extends Controller
     // Show the form to assign teachers to sections
     public function index()
     {
-        // Paginate sections with their current adviser loaded
         $perPage = request()->input('per_page', 10);
-        $sections = Section::with('adviserUser')->paginate($perPage);
+        $search = request()->input('search');
+        $adviserFilter = request()->input('adviser_filter');
+
+        $query = Section::with('adviserUser');
+
+        // Apply search filter
+        if ($search) {
+            $query->where('section', 'like', '%' . $search . '%');
+        }
+
+        // Apply adviser filter
+        if ($adviserFilter === 'assigned') {
+            $query->whereNotNull('adviser');
+        } elseif ($adviserFilter === 'unassigned') {
+            $query->whereNull('adviser');
+        }
+
+        $sections = $query->paginate($perPage)->appends(request()->except('page'));
 
         // Get all users with acc_type 'teacher'
         $teachers = User::where('acc_type', 'teacher')->get();
 
-        // Calculate total sections, assigned and unassigned counts
-        $totalSections = Section::count();
-        $assignedCount = Section::whereNotNull('adviser')->count();
-        $unassignedCount = Section::whereNull('adviser')->count();
+        // Calculate counts based on filtered query (without pagination)
+        $totalSections = $query->count();
+        $assignedCount = $query->whereNotNull('adviser')->count();
+        $unassignedCount = $query->whereNull('adviser')->count();
 
         return view('admin.section-teacher-assignment', compact('sections', 'teachers', 'totalSections', 'assignedCount', 'unassignedCount'));
     }
