@@ -140,10 +140,22 @@ $programs = Program::get(['id', 'code', 'name']);
         $predictiveAnalyticsService = new \App\Services\PredictiveAnalyticsService();
         $predictionCounts = $predictiveAnalyticsService->predictStudentCounts();
 
+        // Get detailed breakdown of analyzed students
+        $detailedBreakdown = $predictiveAnalyticsService->getDetailedStudentBreakdown();
+
+        // Extract student numbers of analyzed students
+        $analyzedStudentNumbers = collect($detailedBreakdown)->pluck('student_number')->toArray();
+
+        // Get students in $students who are not analyzed (excluding Drop Out and Graduated)
+        $notAnalyzedStudents = $students->filter(function($student) use ($analyzedStudentNumbers) {
+            return !in_array($student->student_number, $analyzedStudentNumbers);
+        });
+
         return view('admin.dashboard',[
             'student_enrolled_count' => $studentsCount,
             'students' => $students,
             'studentsGFDO' => $studentsGFDO,
+            'notAnalyzedStudents' => $notAnalyzedStudents,
             'courses_count' => $coursesCount,
             'courses' => $courses,
             'programs_count' => $programsCount,

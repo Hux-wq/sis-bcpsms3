@@ -606,14 +606,21 @@ new Chart(annualOutcomeCtx, {
     }
   }
 });
-    // Use server-passed predictive analytics data and render chart
+// Use server-passed predictive analytics data and render chart
     const predictionCounts = @json($predictionCounts);
 const ctxPredictive = document.getElementById('predictiveAnalyticsChart').getContext('2d');
 
-// Calculate total for percentage calculations
-const totalStudents = (predictionCounts['Pass'] || 0) + (predictionCounts['At Risk'] || 0) + (predictionCounts['Fail'] || 0);
+const totalStudentsInSystem = {{ $student_enrolled_count }};
 
+// Prepare data and labels for the chart
+const labels = ['Pass', 'At Risk', 'Fail'];
+const dataValues = [
+  predictionCounts['Pass'] || 0,
+  predictionCounts['At Risk'] || 0,
+  predictionCounts['Fail'] || 0
+];
 
+// Define gradients for each category
 const passGradient = ctxPredictive.createRadialGradient(0, 0, 0, 0, 0, 150);
 passGradient.addColorStop(0, 'rgba(46, 204, 113, 1)');
 passGradient.addColorStop(0.7, 'rgba(39, 174, 96, 0.9)');
@@ -629,27 +636,26 @@ failGradient.addColorStop(0, 'rgba(231, 76, 60, 1)');
 failGradient.addColorStop(0.7, 'rgba(192, 57, 43, 0.9)');
 failGradient.addColorStop(1, 'rgba(155, 46, 35, 0.8)');
 
+const backgroundColors = [
+  passGradient,
+  riskGradient,
+  failGradient
+];
+
 const predictiveChart = new Chart(ctxPredictive, {
   type: 'doughnut',
   data: {
-    labels: ['Pass', 'At Risk', 'Fail'],
+    labels: labels,
     datasets: [{
       label: 'Predicted Grade Category',
-      data: [
-        predictionCounts['Pass'] || 0,
-        predictionCounts['At Risk'] || 0,
-        predictionCounts['Fail'] || 0
-      ],
-      backgroundColor: [
-        passGradient,
-        riskGradient,
-        failGradient
-      ],
+      data: dataValues,
+      backgroundColor: backgroundColors,
       borderColor: [
         '#ffffff',
         '#ffffff',
+        '#ffffff',
         '#ffffff'
-      ],
+      ].slice(0, labels.length),
       borderWidth: 4,
       hoverBorderWidth: 6,
       hoverOffset: 15,
@@ -698,31 +704,7 @@ const predictiveChart = new Chart(ctxPredictive, {
           boxHeight: 15,
           color: '#2c3e50',
           textAlign: 'center',
-          generateLabels: function(chart) {
-            const data = chart.data;
-            if (data.labels.length && data.datasets.length) {
-              return data.labels.map((label, index) => {
-                const dataset = data.datasets[0];
-                const value = dataset.data[index];
-                const percentage = totalStudents > 0 ? ((value / totalStudents) * 100).toFixed(1) : '0.0';
-                
-                return {
-                  text: `${label}: ${value} (${percentage}%)`,
-                  fillStyle: [
-                    '#2ecc71', // Pass color
-                    '#ffc107', // At Risk color  
-                    '#e74c3c'  // Fail color
-                  ][index],
-                  strokeStyle: 'transparent',
-                  lineWidth: 0,
-                  pointStyle: 'circle',
-                  hidden: false,
-                  index: index
-                };
-              });
-            }
-            return [];
-          }
+          
         }
       },
       tooltip: {
@@ -754,13 +736,13 @@ const predictiveChart = new Chart(ctxPredictive, {
           },
           label: function(context) {
             const value = context.parsed;
-            const percentage = totalStudents > 0 ? ((value / totalStudents) * 100).toFixed(1) : '0.0';
+            const percentage = totalStudentsInSystem > 0 ? ((value / totalStudentsInSystem) * 100).toFixed(1) : '0.0';
             const total = context.dataset.data.reduce((a, b) => a + b, 0);
             
             return [
               `Count: ${value} students`,
               `Percentage: ${percentage}%`,
-              `Total Predicted: ${total}`
+              `Total Students in System: ${totalStudentsInSystem}`
             ];
           }
         },
@@ -789,7 +771,7 @@ const predictiveChart = new Chart(ctxPredictive, {
   plugins: [{
     id: 'centerText',
     afterDraw: function(chart) {
-      if (totalStudents === 0) return;
+      if (totalStudentsInSystem === 0) return;
       
       const ctx = chart.ctx;
       const centerX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
@@ -802,7 +784,7 @@ const predictiveChart = new Chart(ctxPredictive, {
       ctx.fillStyle = '#2c3e50';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(totalStudents, centerX, centerY - 10);
+      ctx.fillText(totalStudentsInSystem, centerX, centerY - 10);
       
       // "Total Students" label
       ctx.font = "600 14px 'Inter', 'Segoe UI', 'Roboto', sans-serif";
